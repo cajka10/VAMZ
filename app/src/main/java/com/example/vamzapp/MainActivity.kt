@@ -12,7 +12,7 @@ class MainActivity : AppCompatActivity() {
 
         val btnNo = findViewById<Button>(R.id.button)
         val btnYes = findViewById<Button>(R.id.button2)
-        val btnDeath = findViewById<Button>(R.id.button3)
+        val btnOk = findViewById<Button>(R.id.button3)
     }
 
 }
