@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="30dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="Profilova fotka"
+        android:textAlignment="center"
+        android:textColor="#000000"
+        android:textStyle="bold"></TextView>
+
+    <ImageView
+        android:id="@+id/imageView_profilePhoto"
+        android:layout_width="170dp"
+        android:layout_height="170dp"
+        android:layout_gravity="center"
+        android:layout_margin="5dp"
+        android:background="#000000"
+        android:padding="1dp"
+        android:src="@drawable/person_icon"></ImageView>
+
+    <Button
+        android:id="@+id/btn_change"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:width="15dp"
+        android:text="Zmeň fotku" />
+    <Button
+        android:id="@+id/btn_confirmPhoto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:width="15dp"
+        android:text="Nahraj fotku" />
+
+    <EditText
+        android:id="@+id/editText_userName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Meno:" />
+
+    <EditText
+        android:id="@+id/editText_Email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:text="Email:" />
+
+
+</LinearLayout>

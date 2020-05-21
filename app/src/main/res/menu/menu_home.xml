@@ -5,12 +5,15 @@
 
     <item android:title="O nás"
         android:id="@+id/about_us"/>
-
+    <item android:title="Môj profil"
+        android:id="@+id/profile"/>
     <group android:id="@+id/menu_items">
         <item android:title="Registrácia"
             android:id="@+id/sign_up"/>
-        <item android:title="Prihlásenie"
+        <item android:title="Prihlásiť sa"
             android:id="@+id/sign_in"/>
     </group>
+    <item android:title="Odhlasit sa "
+        android:id="@+id/logOut"/>
 
 </menu>

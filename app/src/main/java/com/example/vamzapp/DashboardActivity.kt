@@ -5,14 +5,13 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.BaseAdapter
 import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.get
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_dashboard.*
 
@@ -26,8 +25,52 @@ class DashboardActivity : AppCompatActivity() {
         val listView = findViewById<ListView>(R.id.homepage_listview)
 
         listView.adapter = MyCustomAdapter(this)
-        btnSignOut.setOnClickListener {
-            logOut()
+
+    }
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_home, menu)
+        menu!!.get(2).setVisible(true)
+        menu!!.get(3).setVisible(false)
+        menu!!.get(4).setVisible(false)
+        menu!!.getItem(menu.size() - 1 ).setVisible(true)
+
+
+        return super.onCreateOptionsMenu(menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        var selectedOption = ""
+
+        when (item?.itemId) {
+            R.id.about_us -> {
+                selectedOption = "O nás"
+                startActivity(Intent(this, DashboardActivity::class.java))
+                finish()
+            }
+            R.id.profile -> {
+                selectedOption = "Prihlásenie"
+                startActivity(Intent(this, ProfileActivity::class.java))
+                finish()
+            }
+            R.id.logOut -> {
+                selectedOption = "Odhlásenie"
+                logOut()
+            }
+        }
+        Toast.makeText(
+            this, "Moznost " + selectedOption,
+            Toast.LENGTH_SHORT
+        ).show()
+
+
+        return super.onOptionsItemSelected(item)
+    }
+    override fun onStart() {
+        super.onStart()
+        if (auth.currentUser == null ){
+            finish()
+            startActivity(Intent(this, HomeActivity::class.java))
         }
     }
 
