@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "801552101264",
+    "firebase_url": "https://vamzapp.firebaseio.com",
+    "project_id": "vamzapp",
+    "storage_bucket": "vamzapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:801552101264:android:c6c1f47c42275315540d15",
+        "android_client_info": {
+          "package_name": "com.example.vamzapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "801552101264-ubslvaoir2346oi3cr42g4cdu5pq2b63.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.vamzapp",
+            "certificate_hash": "a5ec88dd5d18ac633c11e98a0f7a6114f52ec64d"
+          }
+        },
+        {
+          "client_id": "801552101264-b6plj17pqp53s0pija3qau0afjki8dk0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCgZvEhil3YBY8EDAht8mLutiSiYZ0ZqSY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "801552101264-b6plj17pqp53s0pija3qau0afjki8dk0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
