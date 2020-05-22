@@ -33,42 +33,36 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_home, menu)
-        menu!!.getItem(menu.size() - 1 ).setVisible(false)
-        menu!!.getItem(2).setVisible(false)
+        menu?.setGroupVisible(R.id.menu_offline, true)
+        menu?.setGroupVisible(R.id.menu_online, false)
         return super.onCreateOptionsMenu(menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        var selectedOption = ""
 
         when (item?.itemId) {
-            R.id.about_us -> {
-                selectedOption = "O nás"
-                startActivity(Intent(this, DashboardActivity::class.java))
+            R.id.menuItem_about_us -> {
+                startActivity(Intent(this, HomeActivity::class.java))
                 finish()
             }
-            R.id.sign_in -> {
-                selectedOption = "Prihlásenie"
+            R.id.menuItem_sign_in -> {
                 startActivity(Intent(this, LoginActivity::class.java))
                 finish()
             }
-            R.id.sign_up -> {
-                selectedOption = "Registrácia"
+            R.id.menuItem_sign_up -> {
                 startActivity(Intent(this, SignUpActivity::class.java))
                 finish()
             }
         }
-        Toast.makeText(
-            this, "Moznost " + selectedOption,
-            Toast.LENGTH_SHORT
-        ).show()
-
 
         return super.onOptionsItemSelected(item)
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_home, menu)
+        menu?.setGroupVisible(R.id.menu_offline, true)
+        menu?.setGroupVisible(R.id.menu_online, false)
         return super.onPrepareOptionsMenu(menu)
     }
 }

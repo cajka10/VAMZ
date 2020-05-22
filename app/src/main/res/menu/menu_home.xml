@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
-
-    <item android:title="O nás"
-        android:id="@+id/about_us"/>
-    <item android:title="Môj profil"
-        android:id="@+id/profile"/>
-    <group android:id="@+id/menu_items">
+    <group android:id="@+id/menu_offline">
+        <item android:title="O nás"
+            android:id="@+id/menuItem_about_us"/>
         <item android:title="Registrácia"
-            android:id="@+id/sign_up"/>
+            android:id="@+id/menuItem_sign_up"/>
         <item android:title="Prihlásiť sa"
-            android:id="@+id/sign_in"/>
+            android:id="@+id/menuItem_sign_in"/>
     </group>
-    <item android:title="Odhlasit sa "
-        android:id="@+id/logOut"/>
-
+    <group android:id="@+id/menu_online">
+        <item android:title="Nástenka"
+            android:id="@+id/menuItem_dashBoard"/>
+        <item android:title="Nový príspevok"
+            android:id="@+id/menuItem_new_post"/>
+        <item android:title="Môj profil"
+            android:id="@+id/menuItem_profile"/>
+        <item android:title="Odhlasit sa "
+            android:id="@+id/menuItem_logOut"/>
+    </group>
 </menu>

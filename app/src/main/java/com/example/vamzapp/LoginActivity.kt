@@ -25,24 +25,24 @@ class LoginActivity : AppCompatActivity() {
             finish()
         }
 
-        btnLogin.setOnClickListener{
+        btnLogin.setOnClickListener {
             doLogin()
         }
     }
 
-    fun doLogin(){
-        if (textEditEmail.text.toString().isEmpty()){
+    fun doLogin() {
+        if (textEditEmail.text.toString().isEmpty()) {
             textEditEmail.error = "Zadaj email"
             textEditEmail.requestFocus()
             return
         }
-        if (!Patterns.EMAIL_ADDRESS.matcher(textEditEmail.text.toString()).matches()){
+        if (!Patterns.EMAIL_ADDRESS.matcher(textEditEmail.text.toString()).matches()) {
             textEditEmail.error = "Zadaj spravny email"
             textEditEmail.requestFocus()
             return
 
         }
-        if (textEditPswd.text.toString().isEmpty()){
+        if (textEditPswd.text.toString().isEmpty()) {
             textEditPswd.error = "Zadaj heslo"
             textEditPswd.requestFocus()
             return
@@ -51,30 +51,36 @@ class LoginActivity : AppCompatActivity() {
         auth.signInWithEmailAndPassword(textEditEmail.text.toString(), textEditPswd.text.toString())
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    val user = auth.currentUser
-                    user?.sendEmailVerification()
-                        ?.addOnCompleteListener{task ->
-                            if (task.isSuccessful){
-                                startActivity(Intent(this, LoginActivity :: class.java))
-                                finish()
-                            }}
+                    val user = auth?.currentUser
+                    if (user != null) {
+                        if (!user.isEmailVerified) {
+                            user?.sendEmailVerification()
+                                ?.addOnCompleteListener { task ->
+                                    if (task.isSuccessful) {
+                                        startActivity(Intent(this, LoginActivity::class.java))
+                                        finish()
+                                    }
+                                }
+                        }
+                    }
                     updateUI(user)
                 } else {
-                    Toast.makeText(baseContext, "Login failed.",
-                        Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        baseContext, "Login failed.",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     updateUI(null)
                 }
-
-                // ...
             }
     }
+
     private fun updateUI(currentUser: FirebaseUser?) {
 
         if (currentUser != null) {
-            if(currentUser.isEmailVerified) {
+            if (currentUser.isEmailVerified) {
                 startActivity(Intent(this, DashboardActivity::class.java))
                 finish()
-            }else{
+            } else {
                 Toast.makeText(
                     baseContext, "Please verify your email address.",
                     Toast.LENGTH_SHORT
@@ -82,11 +88,12 @@ class LoginActivity : AppCompatActivity() {
             }
         } else {
             Toast.makeText(
-                baseContext, "Login failed.",
+                baseContext, "Prihlas sa.",
                 Toast.LENGTH_SHORT
             ).show()
         }
     }
+
     public override fun onStart() {
         super.onStart()
         val currentUser = auth.currentUser

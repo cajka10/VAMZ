@@ -6,13 +6,18 @@ import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.BaseAdapter
-import android.widget.ListView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.children
 import androidx.core.view.get
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.activity_dashboard.*
 
 class DashboardActivity : AppCompatActivity() {
@@ -22,46 +27,60 @@ class DashboardActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
         auth = FirebaseAuth.getInstance()
-        val listView = findViewById<ListView>(R.id.homepage_listview)
 
-        listView.adapter = MyCustomAdapter(this)
+        dashboard_recyclerView.layoutManager = LinearLayoutManager(this)
+        val adapter = GroupAdapter<ViewHolder>()
+
+        dashboard_recyclerView.adapter = adapter
 
     }
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_home, menu)
-        menu!!.get(2).setVisible(true)
-        menu!!.get(3).setVisible(false)
-        menu!!.get(4).setVisible(false)
-        menu!!.getItem(menu.size() - 1 ).setVisible(true)
-
+        menu?.setGroupVisible(R.id.menu_offline, false)
+        menu?.setGroupVisible(R.id.menu_online, true)
 
         return super.onCreateOptionsMenu(menu)
         return true
     }
 
+    private fun fetchPosts(){
+        val ref = FirebaseDatabase.getInstance().getReference("/posts")
+        ref.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(p0: DataSnapshot) {
+                p0.children.forEach{
+                    val user = it.getValue(Post::class.java)
+                }
+            }
+
+            override fun onCancelled(p0: DatabaseError) {
+            }
+        })
+    }
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        var selectedOption = ""
 
         when (item?.itemId) {
-            R.id.about_us -> {
-                selectedOption = "O nás"
-                startActivity(Intent(this, DashboardActivity::class.java))
+            R.id.menuItem_dashBoard -> {
+                val intent = Intent(this, DashboardActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
                 finish()
             }
-            R.id.profile -> {
-                selectedOption = "Prihlásenie"
-                startActivity(Intent(this, ProfileActivity::class.java))
+            R.id.menuItem_new_post -> {
+                val intent = Intent(this, NewPostActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
                 finish()
             }
-            R.id.logOut -> {
-                selectedOption = "Odhlásenie"
+            R.id.menuItem_profile -> {
+                val intent = Intent(this, ProfileActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+                finish()
+            }
+            R.id.menuItem_logOut -> {
                 logOut()
             }
         }
-        Toast.makeText(
-            this, "Moznost " + selectedOption,
-            Toast.LENGTH_SHORT
-        ).show()
 
 
         return super.onOptionsItemSelected(item)
@@ -69,8 +88,10 @@ class DashboardActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         if (auth.currentUser == null ){
+            val intent = Intent(this, HomeActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
             finish()
-            startActivity(Intent(this, HomeActivity::class.java))
         }
     }
 
@@ -83,40 +104,12 @@ class DashboardActivity : AppCompatActivity() {
         Log.d("DashBoard", "Odhlasujem užívatela" + auth.currentUser?.email )
         Thread.sleep(2000)
         FirebaseAuth.getInstance().signOut()
-        startActivity(Intent(this, HomeActivity::class.java))
+        val intent = Intent(this, ProfileActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
         finish()
 
 
     }
-    private class MyCustomAdapter(context: Context): BaseAdapter(){
 
-        private val mContext:Context
-        private val names = arrayListOf<String>("Boi", "Nechce sa", "Mato Palcik", "NechceSaMi err", "Fero Sefcik")
-
-        init {
-            mContext = context
-        }
-
-        override fun getCount(): Int {
-            return names.size
-        }
-        override fun getItemId(position: Int): Long {
-            return position.toLong()
-        }
-        override fun getItem(position: Int): Any {
-            return "Test string"
-
-        }
-        override fun getView(position: Int, convertView: View?, viewGroup: ViewGroup?): View {
-            val layoutInflater = LayoutInflater.from(mContext)
-            val row  = layoutInflater.inflate(R.layout.row_dashboard, viewGroup, false)
-
-            val namesTextView = row.findViewById<TextView>(R.id.textView_postTitle)
-            namesTextView.text = names.get(position)
-
-            val postContent = row.findViewById<TextView>(R.id.textView_postContent)
-            postContent.text = "Row number: $position"
-            return row
-        }
-    }
 }

@@ -29,13 +29,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:width="15dp"
-        android:text="Zmeň fotku" />
+        android:text="Vyber fotku" />
     <Button
         android:id="@+id/btn_confirmPhoto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:width="15dp"
-        android:text="Nahraj fotku" />
+        android:text="Zmeň údaje" />
 
     <EditText
         android:id="@+id/editText_userName"
