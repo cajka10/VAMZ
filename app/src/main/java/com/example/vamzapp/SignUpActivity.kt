@@ -3,10 +3,12 @@ package com.example.vamzapp
 import android.content.Intent
 import android.os.Bundle
 import android.util.Patterns
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_main.*
+
 
 class SignUpActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
@@ -19,8 +21,21 @@ class SignUpActivity : AppCompatActivity() {
         btnLogin.setOnClickListener{
             signUpUser()
         }
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
-
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val itemId: Int = item.getItemId()
+        if (itemId == android.R.id.home) {
+            onBackPressed()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+    override fun onBackPressed() {
+        val intent = Intent(this, HomeActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
+        finish()
+    }
     fun signUpUser(){
         if (textEditEmail.text.toString().isEmpty()){
             textEditEmail.error = "Zadaj email"
@@ -49,8 +64,6 @@ class SignUpActivity : AppCompatActivity() {
                     Toast.makeText(baseContext, "Registrácia zlyhala.",
                         Toast.LENGTH_SHORT).show()
                 }
-
-                // ...
             }
     }
 }

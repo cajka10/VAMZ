@@ -1,8 +1,5 @@
 package com.example.vamzapp
 
-import android.app.Dialog
-import com.bumptech.glide.Glide
-import com.bumptech.glide.annotation.GlideModule
 import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.row_dashboard.view.*

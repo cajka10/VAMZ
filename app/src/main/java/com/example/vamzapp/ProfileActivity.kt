@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
@@ -26,7 +27,7 @@ import kotlinx.android.synthetic.main.activity_profile.*
 import java.io.IOException
 import java.util.*
 
-class ProfileActivity : AppCompatActivity(), View.OnClickListener {
+class ProfileActivity : DashboardActivity(), View.OnClickListener {
 
     private lateinit var auth: FirebaseAuth
 
@@ -47,6 +48,12 @@ class ProfileActivity : AppCompatActivity(), View.OnClickListener {
         storageReference = storage!!.reference
         editText_Email.setText(editText_Email.text.toString() + auth.currentUser?.email)
         editText_userName.setText("Meno: " + auth.currentUser?.displayName)
+
+        if (savedInstanceState != null){
+            editText_userName.setText("Meno: " + savedInstanceState.getString("name"))
+            imagePath = Uri.parse(savedInstanceState.getString("imagePath"))
+
+        }
     }
 
     override fun onStart() {
@@ -56,42 +63,6 @@ class ProfileActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_home, menu)
-        menu?.setGroupVisible(R.id.menu_offline, false)
-        menu?.setGroupVisible(R.id.menu_online, true)
-        return super.onCreateOptionsMenu(menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-
-        when (item?.itemId) {
-            R.id.menuItem_dashBoard -> {
-                val intent = Intent(this, DashboardActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-                startActivity(intent)
-                finish()
-            }
-            R.id.menuItem_new_post -> {
-                val intent = Intent(this, NewPostActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-                startActivity(intent)
-                finish()
-            }
-            R.id.menuItem_profile -> {
-                val intent = Intent(this, ProfileActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-                startActivity(intent)
-                finish()
-            }
-            R.id.menuItem_logOut -> {
-
-            }
-        }
-
-        return super.onOptionsItemSelected(item)
-    }
 
     private fun showFileChooser() {
         val intent = Intent()
@@ -172,6 +143,15 @@ class ProfileActivity : AppCompatActivity(), View.OnClickListener {
             uploadPhoto()
         }
     }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+
+        outState?.putString("name", editText_userName.text.toString().substringAfter(":"))
+        outState?.putString("imagePath", imagePath.toString())
+    }
+    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+        super.onRestoreInstanceState(savedInstanceState)
+    }
 }
 
-class User(val uid:String, val username:String, val profileImage:String)

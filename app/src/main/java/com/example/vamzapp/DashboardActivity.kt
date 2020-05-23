@@ -1,51 +1,100 @@
 package com.example.vamzapp
 
-import android.app.Dialog
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.activity_dashboard.*
-import kotlinx.android.synthetic.main.dialog_full_screen.*
-import kotlinx.android.synthetic.main.row_dashboard.view.*
 
 
-class DashboardActivity : AppCompatActivity() {
+open class DashboardActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
+
+    private var ref: FirebaseDatabase? = null
+
+    companion object {
+        val POST_KEY = "POST_KEY"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
         auth = FirebaseAuth.getInstance()
 
-        val dialog = Dialog(this, android.R.style.Theme_DeviceDefault_Light_DarkActionBar)
-        dialog.setContentView(R.layout.dialog_full_screen)
+        ref = FirebaseDatabase.getInstance()
 
         dashboard_recyclerView.layoutManager = LinearLayoutManager(this)
         dashboard_recyclerView.addItemDecoration(
             DividerItemDecoration(
-                dashboard_recyclerView.getContext(),
+                dashboard_recyclerView.context,
                 DividerItemDecoration.VERTICAL
             )
         )
+        editText_dash_searchPost.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+            }
 
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                val searchedText = editText_dash_searchPost.text.toString()
+                findPostByTitle(searchedText)
+            }
+        })
 
         fetchPosts()
-
+        sendNotificationIfChanged()
     }
+
+    private fun findPostByTitle(searchedText: String) {
+        val tempRef = ref?.getReference("/posts")
+        if (tempRef != null) {
+            tempRef.orderByChild("userName").startAt(searchedText)
+                .endAt(searchedText + "\uf8ff")
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onCancelled(p0: DatabaseError) {
+                    }
+
+                    override fun onDataChange(p0: DataSnapshot) {
+                        val adapter = GroupAdapter<ViewHolder>()
+                        p0.children.forEach {
+                            val post = it.getValue(Post::class.java)
+                            if (post != null) {
+                                adapter.add(PostItem(post!!))
+                                adapter.setOnItemClickListener { item, view ->
+                                    val postItem = item as PostItem
+                                    val intent =
+                                        Intent(view.context, FullScreenActivity::class.java)
+                                    intent.putExtra(POST_KEY, postItem.post)
+                                    startActivity(intent)
+                                }
+                            }
+                        }
+                        dashboard_recyclerView.adapter = adapter
+
+                    }
+
+                })
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_home, menu)
         menu?.setGroupVisible(R.id.menu_offline, false)
@@ -55,23 +104,65 @@ class DashboardActivity : AppCompatActivity() {
         return true
     }
 
-    private fun fetchPosts(){
-        val ref = FirebaseDatabase.getInstance().getReference("/posts")
-        ref.addListenerForSingleValueEvent(object : ValueEventListener {
+    private fun sendNotificationIfChanged() {
+        var tempRef = ref?.getReference()?.child("/posts")
+        tempRef?.addChildEventListener(object : ChildEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+            }
+
+            override fun onChildMoved(p0: DataSnapshot, p1: String?) {
+            }
+
+            override fun onChildChanged(p0: DataSnapshot, p1: String?) {
+
+            }
+            override fun onChildAdded(p0: DataSnapshot, p1: String?) {
+                sendNotification()
+            }
+
+            override fun onChildRemoved(p0: DataSnapshot) {
+            }
+
+
+        })
+
+    }
+
+    private fun sendNotification() {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel("n", "n", NotificationManager.IMPORTANCE_DEFAULT)
+            val manager = getSystemService(NotificationManager::class.java)
+            manager.createNotificationChannel(channel)
+
+        } else {
+            return
+        }
+
+        var builder = NotificationCompat.Builder(this, "n")
+            .setContentText("VAMZ")
+            .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark_normal)
+            .setAutoCancel(true)
+            .setContentText("Nový príspevok na nástenke v case: " + System.currentTimeMillis())
+        val managerCompat = NotificationManagerCompat.from(this)
+        managerCompat.notify(999, builder.build())
+    }
+
+    private fun fetchPosts() {
+        var tempRef = ref?.getReference("/posts")
+        tempRef?.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(p0: DataSnapshot) {
                 val adapter = GroupAdapter<ViewHolder>()
-                p0.children.forEach{
+                p0.children.forEach {
                     val post = it.getValue(Post::class.java)
                     if (post != null) {
                         adapter.add(PostItem(post!!))
-                    adapter.setOnItemClickListener{ item, view ->
-//                        val dialog = Dialog(view.context, android.R.style.Theme_DeviceDefault_Light_DarkActionBar)
-//                        dialog.setContentView(R.layout.dialog_full_screen)
-//                        Glide.with(view!!).load(post.photoUrl)
-//                            .into(imageView_fullScreen)
-//                        dialog.show()
-                    }
-
+                        adapter.setOnItemClickListener { item, view ->
+                            val postItem = item as PostItem
+                            val intent = Intent(view.context, FullScreenActivity::class.java)
+                            intent.putExtra(POST_KEY, postItem.post)
+                            startActivity(intent)
+                        }
                     }
                 }
                 dashboard_recyclerView.adapter = adapter
@@ -82,6 +173,7 @@ class DashboardActivity : AppCompatActivity() {
             }
         })
     }
+
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
 
         when (item?.itemId) {
@@ -111,9 +203,10 @@ class DashboardActivity : AppCompatActivity() {
 
         return super.onOptionsItemSelected(item)
     }
+
     override fun onStart() {
         super.onStart()
-        if (auth.currentUser == null ){
+        if (auth.currentUser == null) {
             val intent = Intent(this, HomeActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
@@ -127,7 +220,7 @@ class DashboardActivity : AppCompatActivity() {
             Toast.LENGTH_SHORT
         ).show()
 
-        Log.d("DashBoard", "Odhlasujem užívatela" + auth.currentUser?.email )
+        Log.d("DashBoard", "Odhlasujem užívatela" + auth.currentUser?.email)
         Thread.sleep(2000)
         FirebaseAuth.getInstance().signOut()
         val intent = Intent(this, HomeActivity::class.java)

@@ -4,13 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.gms.tasks.OnFailureListener
-import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.storage.FileDownloadTask
-import java.io.File
 
 
 class HomeActivity : AppCompatActivity() {
@@ -20,7 +15,6 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_homepage)
         auth = FirebaseAuth.getInstance()
-
     }
 
     override fun onStart() {
@@ -29,6 +23,10 @@ class HomeActivity : AppCompatActivity() {
             finish()
             startActivity(Intent(this, DashboardActivity::class.java))
         }
+    }
+
+    override fun onBackPressed() {
+        finish()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

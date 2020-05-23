@@ -1,15 +1,21 @@
 package com.example.vamzapp
 
 import android.app.Activity
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.ProgressDialog
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
@@ -38,29 +44,8 @@ class NewPostActivity : AppCompatActivity(), View.OnClickListener {
         storageReference = storage!!.reference
         textView_newPost_description.setText(textView_newPost_description.text.toString())
 
-    }
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-    private fun savePostToDatabase(imageUrl: String) {
-        val userName = auth.currentUser?.displayName.toString()
-        val description = textView_newPost_description.text.toString()
-        val postTitle = textView_newPost_postTitle.text.toString()
-
-        val ref = FirebaseDatabase.getInstance().getReference("posts")
-        val id = ref.push()?.key
-
-        if (id != null) {
-            val post = Post(id, postTitle, userName, description, imageUrl)
-            ref.child(id).setValue(post)
-                .addOnSuccessListener {
-                    val intent = Intent(this, DashboardActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    startActivity(intent)
-                    finish()
-                }
-                .addOnFailureListener {
-                    Log.d("New Post", "Failed to add new post")
-                }
-        }
 
     }
 
@@ -97,15 +82,13 @@ class NewPostActivity : AppCompatActivity(), View.OnClickListener {
 
             val progressDialog = ProgressDialog(this)
             progressDialog.setTitle("Nahrava sa . . .")
-//            progressDialog.show()
             val imageRef = storageReference!!.child("images/posts/" + UUID.randomUUID().toString())
             imageRef.putFile(imagePath!!)
                 .addOnSuccessListener {
                     //                    progressDialog.dismiss()
                     Toast.makeText(applicationContext, "Obrazok bol nahraty", Toast.LENGTH_SHORT)
                         .show()
-                    imageRef.downloadUrl.addOnSuccessListener {
-                    }
+                    sendNotification()
                 }
                 .addOnFailureListener {
                     progressDialog.dismiss()
@@ -121,10 +104,67 @@ class NewPostActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    private fun savePostToDatabase(imageUrl: String) {
+        val userName = auth.currentUser?.displayName.toString()
+        val description = textView_newPost_description.text.toString()
+        val postTitle = textView_newPost_postTitle.text.toString()
+
+        val ref = FirebaseDatabase.getInstance().getReference("posts")
+        val id = ref.push()?.key
+
+        if (id != null) {
+            val post = Post(id, postTitle, userName, description, imageUrl)
+            ref.child(id).setValue(post)
+                .addOnSuccessListener {
+                    val intent = Intent(this, DashboardActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(intent)
+                    finish()
+                }
+                .addOnFailureListener {
+                    Log.d("New Post", "Failed to add new post")
+                }
+        }
+
+    }
+
+
+    private fun sendNotification(){
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel("postAddedSuccesfuly", "n", NotificationManager.IMPORTANCE_DEFAULT)
+            val manager = getSystemService(NotificationManager::class.java)
+            manager.createNotificationChannel(channel)
+
+        } else {
+            return
+        }
+
+        var builder = NotificationCompat.Builder(this, "postAddedSuccesfuly")
+            .setContentText("VAMZ")
+            .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark_normal)
+            .setAutoCancel(true)
+            .setContentText("Pridal si nový príspevok. " + System.currentTimeMillis())
+        val managerCompat = NotificationManagerCompat.from(this)
+        managerCompat.notify(999, builder.build())
+    }
+
     override fun onClick(p0: View?) {
         if (p0 === btn_newPost_Post) {
             showFileChooser()
         }
     }
-
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val itemId: Int = item.getItemId()
+        if (itemId == android.R.id.home) {
+            onBackPressed()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+    override fun onBackPressed() {
+        val intent = Intent(this, DashboardActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
+        finish()
+    }
 }
