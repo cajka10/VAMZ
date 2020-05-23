@@ -33,8 +33,11 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_home, menu)
-        menu?.setGroupVisible(R.id.menu_offline, true)
-        menu?.setGroupVisible(R.id.menu_online, false)
+        if (auth.currentUser == null ) {
+
+            menu?.setGroupVisible(R.id.menu_offline, true)
+            menu?.setGroupVisible(R.id.menu_online, false)
+        }
         return super.onCreateOptionsMenu(menu)
         return true
     }
@@ -59,10 +62,4 @@ class HomeActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_home, menu)
-        menu?.setGroupVisible(R.id.menu_offline, true)
-        menu?.setGroupVisible(R.id.menu_online, false)
-        return super.onPrepareOptionsMenu(menu)
-    }
 }

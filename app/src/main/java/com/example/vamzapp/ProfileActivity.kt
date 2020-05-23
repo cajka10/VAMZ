@@ -46,7 +46,7 @@ class ProfileActivity : AppCompatActivity(), View.OnClickListener {
 
         storageReference = storage!!.reference
         editText_Email.setText(editText_Email.text.toString() + auth.currentUser?.email)
-        editText_userName.setText(auth.currentUser?.displayName)
+        editText_userName.setText("Meno: " + auth.currentUser?.displayName)
     }
 
     override fun onStart() {
@@ -152,7 +152,7 @@ class ProfileActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun saveUserInfo(photoUri: String) {
-        var  displayName = editText_userName.text.toString()
+        var  displayName  = editText_userName.text.toString().substringAfter(":")
 
         val currUser = auth.currentUser
 

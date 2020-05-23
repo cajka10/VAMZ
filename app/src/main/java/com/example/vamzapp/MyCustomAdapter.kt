@@ -1,11 +1,9 @@
 package com.example.vamzapp
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.row_dashboard.view.*
 
 class MyCustomAdapter: RecyclerView.Adapter<CustomViewHolder>(){
 
@@ -22,7 +20,6 @@ class MyCustomAdapter: RecyclerView.Adapter<CustomViewHolder>(){
 
     override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
         val postTitle = postTitles.get(position)
-        holder.view.textView_dash_postTitle.text = postTitle
     }
 }
 
