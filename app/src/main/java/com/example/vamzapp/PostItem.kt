@@ -1,5 +1,6 @@
 package com.example.vamzapp
 
+import android.app.Dialog
 import com.bumptech.glide.Glide
 import com.bumptech.glide.annotation.GlideModule
 import com.xwray.groupie.Item
@@ -15,7 +16,8 @@ class PostItem(val post:Post): Item<ViewHolder>() {
         val item = viewHolder.itemView
         if ( item.imageView_post_Photo != null) {
 
-            Glide.with(item).load(post.photoUrl)
+
+            GlideApp.with(item).load(post.photoUrl).centerCrop()
                 .into(item.imageView_post_Photo)
 
             item.textView_post_description.text = post.description
@@ -24,4 +26,5 @@ class PostItem(val post:Post): Item<ViewHolder>() {
 
         }
     }
+
 }

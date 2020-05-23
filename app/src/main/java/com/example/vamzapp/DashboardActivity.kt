@@ -1,5 +1,6 @@
 package com.example.vamzapp
 
+import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -17,6 +19,8 @@ import com.google.firebase.database.ValueEventListener
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.activity_dashboard.*
+import kotlinx.android.synthetic.main.dialog_full_screen.*
+import kotlinx.android.synthetic.main.row_dashboard.view.*
 
 
 class DashboardActivity : AppCompatActivity() {
@@ -27,6 +31,9 @@ class DashboardActivity : AppCompatActivity() {
         setContentView(R.layout.activity_dashboard)
         auth = FirebaseAuth.getInstance()
 
+        val dialog = Dialog(this, android.R.style.Theme_DeviceDefault_Light_DarkActionBar)
+        dialog.setContentView(R.layout.dialog_full_screen)
+
         dashboard_recyclerView.layoutManager = LinearLayoutManager(this)
         dashboard_recyclerView.addItemDecoration(
             DividerItemDecoration(
@@ -34,7 +41,10 @@ class DashboardActivity : AppCompatActivity() {
                 DividerItemDecoration.VERTICAL
             )
         )
+
+
         fetchPosts()
+
     }
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_home, menu)
@@ -52,7 +62,17 @@ class DashboardActivity : AppCompatActivity() {
                 val adapter = GroupAdapter<ViewHolder>()
                 p0.children.forEach{
                     val post = it.getValue(Post::class.java)
-                    adapter.add(PostItem(post!!))
+                    if (post != null) {
+                        adapter.add(PostItem(post!!))
+                    adapter.setOnItemClickListener{ item, view ->
+//                        val dialog = Dialog(view.context, android.R.style.Theme_DeviceDefault_Light_DarkActionBar)
+//                        dialog.setContentView(R.layout.dialog_full_screen)
+//                        Glide.with(view!!).load(post.photoUrl)
+//                            .into(imageView_fullScreen)
+//                        dialog.show()
+                    }
+
+                    }
                 }
                 dashboard_recyclerView.adapter = adapter
 
