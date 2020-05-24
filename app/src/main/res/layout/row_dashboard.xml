@@ -25,7 +25,7 @@
         android:layout_marginStart="68dp"
         android:layout_marginEnd="204dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView_post_userName"
+        app:layout_constraintStart_toEndOf="@+id/textView_post_labelLikes"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_launcher_background" /><![CDATA[
@@ -36,17 +36,42 @@
 
 
 
+
+
     ]]>
 
     <TextView
         android:id="@+id/textView_post_userName"
         android:layout_width="52dp"
-        android:layout_height="40dp"
+        android:layout_height="0dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="8dp"
         android:text="Autor"
         android:textSize="11sp"
+        app:layout_constraintBottom_toTopOf="@+id/textView_post_labelLikes"
         app:layout_constraintEnd_toStartOf="@+id/imageView_post_Photo"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView_post_labelLikes"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:text="Páči sa:"
+        app:layout_constraintBottom_toTopOf="@+id/textView_post_numLikes"
+        app:layout_constraintEnd_toStartOf="@+id/imageView_post_Photo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView_post_userName" />
+
+    <TextView
+        android:id="@+id/textView_post_numLikes"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="60dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/imageView_post_Photo"
+        app:layout_constraintStart_toStartOf="@+id/textView_post_labelLikes"
+        app:layout_constraintTop_toBottomOf="@+id/textView_post_labelLikes" />
 </androidx.constraintlayout.widget.ConstraintLayout>

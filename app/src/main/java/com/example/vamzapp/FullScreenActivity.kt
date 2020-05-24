@@ -9,24 +9,39 @@ import android.os.Environment
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.gms.tasks.OnSuccessListener
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.dialog_full_screen.*
+import kotlinx.android.synthetic.main.row_dashboard.*
 
 class FullScreenActivity : AppCompatActivity() {
-
+    private lateinit var auth: FirebaseAuth
     internal var storage: FirebaseStorage? = null
     internal var storageReference: StorageReference? = null
+
+    companion object like {
+        var id: String = ""
+        var userName: String = ""
+        var uid: String = ""
+
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.dialog_full_screen)
 
+        auth = FirebaseAuth.getInstance()
+
         storage = FirebaseStorage.getInstance()
         storageReference = storage!!.reference
 
         val post = intent.getParcelableExtra<Post>(DashboardActivity.POST_KEY)
+        post.addLike()
         GlideApp.with(this)
             .load(post.photoUrl)
             .into(imageView_fullScreen)
@@ -36,16 +51,50 @@ class FullScreenActivity : AppCompatActivity() {
         btn_screen_download.setOnClickListener {
             downloadPhoto("test", ".jpg", Environment.DIRECTORY_DCIM, post.photoUrl)
         }
-
+        btn_screen_like.setOnClickListener {
+            updateLikes(post)
+        }
+        getNumberOfLikes(post)
     }
 
-    private fun download(imageName: String) {
-        val imageRef = storageReference!!.child("images/posts/$imageName")
-        imageRef.downloadUrl.addOnSuccessListener {
-            downloadPhoto("test", ".jpg", Environment.DIRECTORY_DCIM, it.toString())
+    private fun updateLikes(post: Post) {
+        val postId = post.postId
+        val uid = auth.currentUser?.uid.toString()
+        val dbRef = FirebaseDatabase.getInstance().getReference()
+        val id = dbRef.push()?.key
+        like.userName = auth.currentUser?.displayName.toString()
+        if (id != null) {
+            like.id = id
+        }
+        like.uid = uid
+
+        dbRef.child("posts/$postId/likes/$uid").setValue(like).addOnSuccessListener {
+            Toast.makeText(this, "Prispevok sa vam páči", Toast.LENGTH_SHORT)
+        }.addOnFailureListener {
+            Toast.makeText(this, "Prispevok sa nepodaril oznacit paci sa mi", Toast.LENGTH_SHORT)
+
         }
 
+
     }
+
+    private fun getNumberOfLikes(post: Post) {
+        val dbRef = FirebaseDatabase.getInstance().getReference()
+        val postId = post.postId
+
+        dbRef.child("posts/$postId/likes")
+            .addListenerForSingleValueEvent(object : ValueEventListener{
+                override fun onCancelled(p0: DatabaseError) {
+
+                }
+
+                override fun onDataChange(p0: DataSnapshot) {
+                    textView_screen_numOfLikes.text = (p0.childrenCount).toString()
+                }
+
+            })
+    }
+
 
     private fun downloadPhoto(
         fileName: String,

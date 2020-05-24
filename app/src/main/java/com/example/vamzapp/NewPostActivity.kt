@@ -120,7 +120,7 @@ class NewPostActivity : AppCompatActivity(), View.OnClickListener {
         val id = ref.push()?.key
 
         if (id != null) {
-            val post = Post(id, imageName, postTitle, userName, description, imageUrl)
+            val post = Post(id, imageName, postTitle, userName, description, imageUrl, 0)
             ref.child(id).setValue(post)
                 .addOnSuccessListener {
                     val intent = Intent(this, DashboardActivity::class.java)

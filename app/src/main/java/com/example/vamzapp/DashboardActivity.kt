@@ -60,7 +60,7 @@ open class DashboardActivity : AppCompatActivity() {
         })
 
         fetchPosts()
-        sendNotificationIfChanged()
+//        sendNotificationIfChanged()
     }
 
     private fun findPostByTitle(searchedText: String) {

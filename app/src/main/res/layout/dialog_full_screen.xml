@@ -18,38 +18,57 @@
         android:id="@+id/btn_screen_like"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="68dp"
-        android:layout_marginTop="96dp"
+        android:layout_marginStart="53dp"
         android:text="Páči sa mi"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView_fullScreen" />
+        app:layout_constraintStart_toStartOf="@+id/textView_screen_description"
+        app:layout_constraintTop_toBottomOf="@+id/textView_screen_description" />
 
     <Button
         android:id="@+id/btn_screen_download"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="96dp"
+        android:layout_marginStart="52dp"
         android:text="Stiahnúť"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.48"
         app:layout_constraintStart_toEndOf="@+id/btn_screen_like"
-        app:layout_constraintTop_toBottomOf="@+id/imageView_fullScreen" />
+        app:layout_constraintTop_toBottomOf="@+id/textView_screen_description" />
 
     <TextView
         android:id="@+id/textView_screen_description"
         android:layout_width="358dp"
         android:layout_height="62dp"
+        android:layout_marginTop="48dp"
         android:text="TextView"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.49"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView_fullScreen"
-        app:layout_constraintVertical_bias="0.149" />
+        app:layout_constraintVertical_bias="0.015" />
+
+    <TextView
+        android:id="@+id/textView_screen_LabelLikes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="112dp"
+        android:text="Páči sa to:"
+        app:layout_constraintBaseline_toBaselineOf="@+id/textView_screen_numOfLikes"
+        app:layout_constraintStart_toStartOf="@+id/textView_screen_description" />
+
+    <TextView
+        android:id="@+id/textView_screen_numOfLikes"
+        android:layout_width="64dp"
+        android:layout_height="19dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="22dp"
+        android:text="Likes"
+        app:layout_constraintBottom_toTopOf="@+id/textView_screen_description"
+        app:layout_constraintStart_toEndOf="@+id/textView_screen_LabelLikes"
+        app:layout_constraintTop_toBottomOf="@+id/imageView_fullScreen" />
 
     <!--        android:layout_width="0dp"-->
-<!--        android:layout_height="737dp"-->
-<!--        app:layout_constraintBaseline_toBaselineOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-        tools:srcCompat="@tools:sample/backgrounds/scenic" />
+    <!--        android:layout_height="737dp"-->
+    <!--        app:layout_constraintBaseline_toBaselineOf="parent"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    tools:srcCompat="@tools:sample/backgrounds/scenic" />
 </androidx.constraintlayout.widget.ConstraintLayout>
