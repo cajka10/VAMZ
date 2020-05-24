@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
@@ -81,14 +82,19 @@ class NewPostActivity : AppCompatActivity(), View.OnClickListener {
             imageView_newPost_Post.setImageBitmap(bitmap)
 
             val progressDialog = ProgressDialog(this)
+            val imageName = UUID.randomUUID().toString()
             progressDialog.setTitle("Nahrava sa . . .")
-            val imageRef = storageReference!!.child("images/posts/" + UUID.randomUUID().toString())
+            val imageRef = storageReference!!.child("images/posts/" + imageName)
             imageRef.putFile(imagePath!!)
                 .addOnSuccessListener {
                     //                    progressDialog.dismiss()
                     Toast.makeText(applicationContext, "Obrazok bol nahraty", Toast.LENGTH_SHORT)
                         .show()
                     sendNotification()
+                    imageRef.downloadUrl.addOnSuccessListener {
+                        savePostToDatabase(it.toString(), imageName)
+
+                    }
                 }
                 .addOnFailureListener {
                     progressDialog.dismiss()
@@ -100,11 +106,12 @@ class NewPostActivity : AppCompatActivity(), View.OnClickListener {
                         100.0 * taskSnapshot.bytesTransferred / taskSnapshot.totalByteCount
                     progressDialog.setMessage("Nahralo sa " + progress.toInt() + "%")
                 }
-            savePostToDatabase(parImagePath.toString())
+
+//            savePostToDatabase(imageUrl.toString(), imageName)
         }
     }
 
-    private fun savePostToDatabase(imageUrl: String) {
+    private fun savePostToDatabase(imageUrl: String, imageName : String) {
         val userName = auth.currentUser?.displayName.toString()
         val description = textView_newPost_description.text.toString()
         val postTitle = textView_newPost_postTitle.text.toString()
@@ -113,7 +120,7 @@ class NewPostActivity : AppCompatActivity(), View.OnClickListener {
         val id = ref.push()?.key
 
         if (id != null) {
-            val post = Post(id, postTitle, userName, description, imageUrl)
+            val post = Post(id, imageName, postTitle, userName, description, imageUrl)
             ref.child(id).setValue(post)
                 .addOnSuccessListener {
                     val intent = Intent(this, DashboardActivity::class.java)

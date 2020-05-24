@@ -7,10 +7,49 @@
 
     <ImageView
         android:id="@+id/imageView_fullScreen"
-        android:layout_width="0dp"
-        android:layout_height="737dp"
-        app:layout_constraintBaseline_toBaselineOf="parent"
+        android:layout_width="412dp"
+        android:layout_height="556dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/btn_screen_like"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="68dp"
+        android:layout_marginTop="96dp"
+        android:text="Páči sa mi"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView_fullScreen" />
+
+    <Button
+        android:id="@+id/btn_screen_download"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="96dp"
+        android:text="Stiahnúť"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.48"
+        app:layout_constraintStart_toEndOf="@+id/btn_screen_like"
+        app:layout_constraintTop_toBottomOf="@+id/imageView_fullScreen" />
+
+    <TextView
+        android:id="@+id/textView_screen_description"
+        android:layout_width="358dp"
+        android:layout_height="62dp"
+        android:text="TextView"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView_fullScreen"
+        app:layout_constraintVertical_bias="0.149" />
+
+    <!--        android:layout_width="0dp"-->
+<!--        android:layout_height="737dp"-->
+<!--        app:layout_constraintBaseline_toBaselineOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
         tools:srcCompat="@tools:sample/backgrounds/scenic" />
 </androidx.constraintlayout.widget.ConstraintLayout>
