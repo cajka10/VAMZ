@@ -35,8 +35,6 @@ class PostItem(val post:Post): Item<ViewHolder>() {
 
     }
 
-
-
     private fun getNumberOfLikes(post: Post, viewHolder: ViewHolder) {
         val dbRef = FirebaseDatabase.getInstance().getReference()
         val postId = post.postId
@@ -44,9 +42,7 @@ class PostItem(val post:Post): Item<ViewHolder>() {
         dbRef.child("posts/$postId/likes")
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onCancelled(p0: DatabaseError) {
-
                 }
-
                 override fun onDataChange(p0: DataSnapshot) {
                     viewHolder.itemView.textView_post_numLikes.text = p0.childrenCount.toString()
                 }

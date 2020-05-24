@@ -82,7 +82,7 @@ class FullScreenActivity : AppCompatActivity() {
         val postId = post.postId
 
         dbRef.child("posts/$postId/likes")
-            .addListenerForSingleValueEvent(object : ValueEventListener{
+            .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onCancelled(p0: DatabaseError) {
 
                 }

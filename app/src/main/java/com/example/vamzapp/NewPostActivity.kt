@@ -4,8 +4,13 @@ import android.app.Activity
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.ProgressDialog
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.net.Uri
+import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
@@ -33,13 +38,21 @@ class NewPostActivity : AppCompatActivity(), View.OnClickListener {
     private var imagePath: Uri? = null
     internal var storage: FirebaseStorage? = null
     internal var storageReference: StorageReference? = null
-    var selectedCategory : CategoriesEnum? = null
-    var imageUrl : String = ""
-    var imageName : String = ""
+    var selectedCategory: CategoriesEnum? = null
+    var imageUrl: String = ""
+    var imageName: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_post)
+
+        var intentFilter = IntentFilter()
+//        var myReceiver = ConnectionReceiver()
+//        intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION)
+        val myReceiver = NetworkChangedReceiver()
+        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION)
+
+        registerReceiver(myReceiver, intentFilter)
 
         auth = FirebaseAuth.getInstance()
         supportActionBar?.title = "Vytvor nový príspevok"
@@ -51,14 +64,18 @@ class NewPostActivity : AppCompatActivity(), View.OnClickListener {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val categories = arrayOf(CategoriesEnum.FUNNY, CategoriesEnum.AWESOME, CategoriesEnum.ANIMALS)
-        val arrayAdapter = ArrayAdapter<CategoriesEnum>(this, R.layout.support_simple_spinner_dropdown_item, categories)
+        val categories =
+            arrayOf(CategoriesEnum.FUNNY, CategoriesEnum.AWESOME, CategoriesEnum.ANIMALS)
+        val arrayAdapter = ArrayAdapter<CategoriesEnum>(
+            this,
+            R.layout.support_simple_spinner_dropdown_item,
+            categories
+        )
 
         spinner.adapter = arrayAdapter
 
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(p0: AdapterView<*>?) {
-
             }
 
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
@@ -158,7 +175,6 @@ class NewPostActivity : AppCompatActivity(), View.OnClickListener {
     }
 
 
-
     private fun sendNotification() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -178,7 +194,7 @@ class NewPostActivity : AppCompatActivity(), View.OnClickListener {
             .setContentText("VAMZ")
             .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark_normal)
             .setAutoCancel(true)
-            .setContentText("Pridal si nový príspevok. " + System.currentTimeMillis())
+            .setContentText("Pribudol ti like na príspevku")
         val managerCompat = NotificationManagerCompat.from(this)
         managerCompat.notify(999, builder.build())
     }
@@ -187,7 +203,7 @@ class NewPostActivity : AppCompatActivity(), View.OnClickListener {
         if (p0 === imageView_newPost_Post) {
             showFileChooser()
         }
-        if (p0 === btn_newPost_Post){
+        if (p0 === btn_newPost_Post) {
             savePostToDatabase(imageUrl, imageName)
         }
     }
