@@ -107,6 +107,7 @@ class ProfileActivity : DashboardActivity(), View.OnClickListener {
                         .show()
                     imageRef.downloadUrl.addOnSuccessListener {
                         saveUserInfo(it.toString())
+                        Glide.with(this).load(it.toString()).into(imageView_profilePhoto)
                     }
                 }
                 .addOnFailureListener {

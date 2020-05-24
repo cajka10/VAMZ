@@ -2,6 +2,7 @@ package com.example.vamzapp
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -21,6 +22,8 @@ import com.google.firebase.database.*
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.activity_dashboard.*
+import kotlinx.android.synthetic.main.row_dashboard.*
+import kotlinx.android.synthetic.main.row_dashboard.view.*
 
 
 open class DashboardActivity : AppCompatActivity() {
@@ -58,9 +61,38 @@ open class DashboardActivity : AppCompatActivity() {
                 findPostByTitle(searchedText)
             }
         })
+//        textView_post_userName.setOnClickListener{
+//            selectProfile(textView_post_userName.text.toString(), it.context)
+//        }
 
         fetchPosts()
-//        sendNotificationIfChanged()
+        sendNotificationIfChanged()
+    }
+
+    private fun fetchPosts() {
+        var tempRef = ref?.getReference("/posts")
+        tempRef?.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(p0: DataSnapshot) {
+                val adapter = GroupAdapter<ViewHolder>()
+                p0.children.forEach {
+                    val post = it.getValue(Post::class.java)
+                    if (post != null) {
+                        adapter.add(PostItem(post!!))
+                        adapter.setOnItemClickListener { item, view ->
+                            val postItem = item as PostItem
+                            val intent = Intent(view.context, FullScreenActivity::class.java)
+                            intent.putExtra(POST_KEY, postItem.post)
+                            startActivity(intent)
+                        }
+                    }
+                }
+                dashboard_recyclerView.adapter = adapter
+
+            }
+
+            override fun onCancelled(p0: DatabaseError) {
+            }
+        })
     }
 
     private fun findPostByTitle(searchedText: String) {
@@ -95,17 +127,30 @@ open class DashboardActivity : AppCompatActivity() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_home, menu)
-        menu?.setGroupVisible(R.id.menu_offline, false)
-        menu?.setGroupVisible(R.id.menu_online, true)
+//    private fun selectProfile(userName : String, context : Context?) {
+//        val dbRef = FirebaseDatabase.getInstance().getReference("/users")
+//
+//        dbRef.orderByChild("userName").startAt(userName).endAt(userName + "\uf8ff")
+//            .addValueEventListener( object : ValueEventListener{
+//                override fun onCancelled(p0: DatabaseError) {
+//                }
+//
+//                override fun onDataChange(p0: DataSnapshot) {
+//                    val user = p0.getValue(User :: class.java)
+//                    val intent = Intent(context, ProfileActivity::class.java)
+//                    intent.putExtra("USER_KEY", user)
+//                }
+//
+//            })
+//    }
 
-        return super.onCreateOptionsMenu(menu)
-        return true
-    }
+
 
     private fun sendNotificationIfChanged() {
-        var tempRef = ref?.getReference()?.child("/posts")
+        val uid = auth.currentUser?.uid.toString()
+        var tempRef = ref?.getReference()?.child("/posts")?.orderByChild("uid")?.startAt(uid)
+            ?.endAt(uid + "\uf8ff")
+
         tempRef?.addChildEventListener(object : ChildEventListener {
             override fun onCancelled(p0: DatabaseError) {
             }
@@ -114,10 +159,9 @@ open class DashboardActivity : AppCompatActivity() {
             }
 
             override fun onChildChanged(p0: DataSnapshot, p1: String?) {
-
+                sendNotification()
             }
             override fun onChildAdded(p0: DataSnapshot, p1: String?) {
-                sendNotification()
             }
 
             override fun onChildRemoved(p0: DataSnapshot) {
@@ -148,31 +192,7 @@ open class DashboardActivity : AppCompatActivity() {
         managerCompat.notify(999, builder.build())
     }
 
-    private fun fetchPosts() {
-        var tempRef = ref?.getReference("/posts")
-        tempRef?.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(p0: DataSnapshot) {
-                val adapter = GroupAdapter<ViewHolder>()
-                p0.children.forEach {
-                    val post = it.getValue(Post::class.java)
-                    if (post != null) {
-                        adapter.add(PostItem(post!!))
-                        adapter.setOnItemClickListener { item, view ->
-                            val postItem = item as PostItem
-                            val intent = Intent(view.context, FullScreenActivity::class.java)
-                            intent.putExtra(POST_KEY, postItem.post)
-                            startActivity(intent)
-                        }
-                    }
-                }
-                dashboard_recyclerView.adapter = adapter
 
-            }
-
-            override fun onCancelled(p0: DatabaseError) {
-            }
-        })
-    }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
 
@@ -204,6 +224,15 @@ open class DashboardActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_home, menu)
+        menu?.setGroupVisible(R.id.menu_offline, false)
+        menu?.setGroupVisible(R.id.menu_online, true)
+
+        return super.onCreateOptionsMenu(menu)
+        return true
+    }
+
     override fun onStart() {
         super.onStart()
         if (auth.currentUser == null) {
@@ -221,7 +250,7 @@ open class DashboardActivity : AppCompatActivity() {
         ).show()
 
         Log.d("DashBoard", "Odhlasujem užívatela" + auth.currentUser?.email)
-        Thread.sleep(2000)
+        Thread.sleep(500)
         FirebaseAuth.getInstance().signOut()
         val intent = Intent(this, HomeActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)

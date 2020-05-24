@@ -17,7 +17,6 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.dialog_full_screen.*
-import kotlinx.android.synthetic.main.row_dashboard.*
 
 class FullScreenActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
@@ -41,7 +40,6 @@ class FullScreenActivity : AppCompatActivity() {
         storageReference = storage!!.reference
 
         val post = intent.getParcelableExtra<Post>(DashboardActivity.POST_KEY)
-        post.addLike()
         GlideApp.with(this)
             .load(post.photoUrl)
             .into(imageView_fullScreen)
@@ -69,9 +67,10 @@ class FullScreenActivity : AppCompatActivity() {
         like.uid = uid
 
         dbRef.child("posts/$postId/likes/$uid").setValue(like).addOnSuccessListener {
-            Toast.makeText(this, "Prispevok sa vam páči", Toast.LENGTH_SHORT)
+            Toast.makeText(this, "Prispevok sa vam páči", Toast.LENGTH_SHORT).show()
         }.addOnFailureListener {
             Toast.makeText(this, "Prispevok sa nepodaril oznacit paci sa mi", Toast.LENGTH_SHORT)
+                .show()
 
         }
 
