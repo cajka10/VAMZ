@@ -32,11 +32,11 @@ open class DashboardActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private var selectedCategory: CategoriesEnum? = null
 
+
     private var ref: FirebaseDatabase? = null
     private val myReceiver = object : NetworkChangedReceiver() {
         override fun broadcastResult(connected: Boolean) {
         }
-
     }
 
     companion object {
@@ -99,10 +99,14 @@ open class DashboardActivity : AppCompatActivity() {
 
         }
 
+
         fetchPosts()
         sendNotificationIfChanged()
     }
 
+    /**
+     *
+     */
     private fun fetchPosts() {
         var tempRef = ref?.getReference("/posts")
         tempRef?.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -128,8 +132,14 @@ open class DashboardActivity : AppCompatActivity() {
         })
     }
 
+    //Najdenie všetkých príspevkov, podľa mena užívateľa
+    /**
+     *
+     */
     private fun findPostByUserName(myTag: String, searchedText: String) {
         val tempRef = ref?.getReference("/posts")
+        val adapter = GroupAdapter<ViewHolder>()
+
         if (tempRef != null) {
             tempRef.orderByChild(myTag).startAt(searchedText)
                 .endAt(searchedText + "\uf8ff")
@@ -138,9 +148,9 @@ open class DashboardActivity : AppCompatActivity() {
                     }
 
                     override fun onDataChange(p0: DataSnapshot) {
-                        val adapter = GroupAdapter<ViewHolder>()
                         p0.children.forEach {
                             val post = it.getValue(Post::class.java)
+//                            latestPosts[it.key!!] = post
                             if (post != null) {
                                 adapter.add(PostItem(post!!))
                                 adapter.setOnItemClickListener { item, view ->
@@ -159,6 +169,9 @@ open class DashboardActivity : AppCompatActivity() {
     }
 
 
+    /**
+     *
+     */
     private fun sendNotificationIfChanged() {
         val uid = auth.currentUser?.uid.toString()
         var tempRef = ref?.getReference()?.child("/posts")?.orderByChild("uid")?.startAt(uid)
@@ -184,6 +197,9 @@ open class DashboardActivity : AppCompatActivity() {
 
     }
 
+    /**
+     *
+     */
     private fun sendNotification() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel("n", "n", NotificationManager.IMPORTANCE_DEFAULT)
@@ -244,6 +260,7 @@ open class DashboardActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+//        dashboard_recyclerView.scrollToPosition(adapter.itemCount - 1)
         if (auth.currentUser == null) {
             val intent = Intent(this, HomeActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -252,6 +269,10 @@ open class DashboardActivity : AppCompatActivity() {
         }
     }
 
+
+    /**
+     *
+     */
     fun logOut() {
         Toast.makeText(
             baseContext, "Odhlasujem",

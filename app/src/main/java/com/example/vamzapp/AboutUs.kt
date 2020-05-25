@@ -10,15 +10,17 @@ class AboutUs : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        supportActionBar?.title = "O nás"
+
         setContentView(R.layout.activity_about_us)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
 
-        val fileName = "test.txt"
+        var fileName = "about_us_file.txt"
         var tempString = ""
 
         try {
-            val input = application.assets.open(fileName).apply {
+            application.assets.open(fileName).apply {
                 tempString = this.readBytes().toString(Charsets.UTF_8)
             }.close()
         } catch (e: Exception) {
@@ -31,9 +33,10 @@ class AboutUs : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        val intent = Intent(this, DashboardActivity::class.java)
+        val intent = Intent(this, HomeActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
         finish()
     }
+
 }

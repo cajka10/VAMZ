@@ -33,12 +33,17 @@ class SignUpActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
+
     override fun onBackPressed() {
         val intent = Intent(this, HomeActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
         finish()
     }
+
+    /**
+     *
+     */
     fun signUpUser(){
         if (textEditEmail.text.toString().isEmpty()){
             textEditEmail.error = "Zadaj email"
@@ -70,6 +75,9 @@ class SignUpActivity : AppCompatActivity() {
             }
     }
 
+    /**
+     *
+     */
     private fun savePostToDatabase() {
         var tempUserName = ""
         if (auth.currentUser?.displayName != null) {

@@ -24,8 +24,8 @@ import kotlinx.android.synthetic.main.dialog_full_screen.*
 
 class FullScreenActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
-    internal var storage: FirebaseStorage? = null
-    internal var storageReference: StorageReference? = null
+    private var storage: FirebaseStorage? = null
+    private var storageReference: StorageReference? = null
 
     companion object like {
         var id: String = ""
@@ -39,6 +39,7 @@ class FullScreenActivity : AppCompatActivity() {
         setContentView(R.layout.dialog_full_screen)
 
         auth = FirebaseAuth.getInstance()
+        supportActionBar?.title = "Môj profil"
 
         storage = FirebaseStorage.getInstance()
         storageReference = storage!!.reference
@@ -134,8 +135,9 @@ class FullScreenActivity : AppCompatActivity() {
      */
     private fun setUserPhoto(url: String) {
         if (url != null && !url.isEmpty()) {
-            Glide.with(this).load(url).apply(RequestOptions.circleCropTransform()).into(imageView_screen_user)
-        } else{
+            Glide.with(this).load(url).apply(RequestOptions.circleCropTransform())
+                .into(imageView_screen_user)
+        } else {
             val tempBitmap = BitmapFactory.decodeFile("drawable/person_icon.jpg");
             imageView_screen_user.setImageBitmap(tempBitmap)
         }

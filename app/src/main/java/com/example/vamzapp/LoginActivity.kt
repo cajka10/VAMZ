@@ -30,6 +30,9 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     *
+     */
     fun doLogin() {
         if (textEditEmail.text.toString().isEmpty()) {
             textEditEmail.error = "Zadaj email"
@@ -74,6 +77,9 @@ class LoginActivity : AppCompatActivity() {
             }
     }
 
+    /**
+     *
+     */
     private fun updateUI(currentUser: FirebaseUser?) {
 
         if (currentUser != null) {
@@ -82,7 +88,7 @@ class LoginActivity : AppCompatActivity() {
                 finish()
             } else {
                 Toast.makeText(
-                    baseContext, "Please verify your email address.",
+                    baseContext, "Potvrď email.",
                     Toast.LENGTH_SHORT
                 ).show()
             }

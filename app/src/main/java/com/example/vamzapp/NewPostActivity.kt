@@ -48,6 +48,9 @@ class NewPostActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    /**
+     *
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_post)
@@ -95,6 +98,9 @@ class NewPostActivity : AppCompatActivity(), View.OnClickListener {
 
     }
 
+    /**
+     *
+     */
     private fun showFileChooser() {
         val intent = Intent()
         intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
@@ -121,8 +127,11 @@ class NewPostActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    /**
+     *
+     */
     private fun uploadPhoto(parImagePath: Uri?) {
-
+        btn_newPost_Post.isClickable = false
         if (parImagePath != null) {
             val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, imagePath)
             imageView_newPost_Post.setImageBitmap(bitmap)
@@ -153,6 +162,9 @@ class NewPostActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    /**
+     *
+     */
     private fun savePostToDatabase(imageUrl: String, imageName: String) {
         val userName = auth.currentUser?.displayName.toString()
         val description = textView_newPost_description.text.toString()
@@ -188,7 +200,9 @@ class NewPostActivity : AppCompatActivity(), View.OnClickListener {
 
     }
 
-
+    /**
+     *
+     */
     private fun sendNotification() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -240,8 +254,8 @@ class NewPostActivity : AppCompatActivity(), View.OnClickListener {
         finish()
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onDestroy() {
+        super.onDestroy()
         unregisterReceiver(myReceiver)
     }
 

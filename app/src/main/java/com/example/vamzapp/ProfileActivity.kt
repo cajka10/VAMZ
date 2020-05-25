@@ -35,6 +35,8 @@ class ProfileActivity : DashboardActivity(), View.OnClickListener {
         setContentView(R.layout.activity_profile)
         auth = FirebaseAuth.getInstance()
 
+        supportActionBar?.title = "Môj profil"
+
         btn_change.setOnClickListener(this)
         btn_confirmPhoto.setOnClickListener(this)
         storage = FirebaseStorage.getInstance()
@@ -48,6 +50,7 @@ class ProfileActivity : DashboardActivity(), View.OnClickListener {
             imagePath = Uri.parse(savedInstanceState.getString("imagePath"))
 
         }
+
     }
 
     override fun onStart() {
@@ -57,7 +60,9 @@ class ProfileActivity : DashboardActivity(), View.OnClickListener {
         }
     }
 
-
+    /**
+     *
+     */
     private fun showFileChooser() {
         val intent = Intent()
         intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
@@ -65,6 +70,7 @@ class ProfileActivity : DashboardActivity(), View.OnClickListener {
         intent.action = Intent.ACTION_OPEN_DOCUMENT
         startActivityForResult(Intent.createChooser(intent, "Vyber obrázok"), PICK_IMAGE_REQUEST)
     }
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -85,6 +91,9 @@ class ProfileActivity : DashboardActivity(), View.OnClickListener {
         }
     }
 
+    /**
+     *
+     */
     private fun uploadPhoto() {
         if (imagePath != null) {
             val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, imagePath)
@@ -117,6 +126,9 @@ class ProfileActivity : DashboardActivity(), View.OnClickListener {
         }
     }
 
+    /**
+     *
+     */
     private fun saveUserInfo(photoUri: String) {
         var displayName = editText_userName.text.toString()
         val currUser = auth.currentUser
@@ -154,6 +166,9 @@ class ProfileActivity : DashboardActivity(), View.OnClickListener {
         }
     }
 
+    /**
+     *
+     */
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
 
@@ -161,8 +176,12 @@ class ProfileActivity : DashboardActivity(), View.OnClickListener {
         outState?.putString("imagePath", imagePath.toString())
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
-        super.onRestoreInstanceState(savedInstanceState)
+    override fun onBackPressed() {
+        val intent = Intent(this, DashboardActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
+        finish()
     }
+
 }
 
