@@ -4,13 +4,10 @@ import android.app.Activity
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.ProgressDialog
-import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.ConnectivityManager
-import android.net.NetworkInfo
 import android.net.Uri
-import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
@@ -63,6 +60,7 @@ class NewPostActivity : AppCompatActivity(), View.OnClickListener {
 
         auth = FirebaseAuth.getInstance()
         supportActionBar?.title = "Vytvor nový príspevok"
+
 
         btn_newPost_Post.setOnClickListener(this)
 

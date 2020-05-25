@@ -13,14 +13,14 @@ import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.dialog_full_screen.*
 import kotlinx.android.synthetic.main.row_dashboard.view.*
 
-class PostItem(val post:Post): Item<ViewHolder>() {
+class PostItem(val post: Post) : Item<ViewHolder>() {
     override fun getLayout(): Int {
         return R.layout.row_dashboard
     }
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
         val item = viewHolder.itemView
-        if ( item.imageView_post_Photo != null) {
+        if (item.imageView_post_Photo != null) {
 
 
             GlideApp.with(item).load(post.photoUrl).centerCrop()
@@ -43,6 +43,7 @@ class PostItem(val post:Post): Item<ViewHolder>() {
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onCancelled(p0: DatabaseError) {
                 }
+
                 override fun onDataChange(p0: DataSnapshot) {
                     viewHolder.itemView.textView_post_numLikes.text = p0.childrenCount.toString()
                 }

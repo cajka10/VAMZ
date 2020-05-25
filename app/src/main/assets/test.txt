@@ -1,0 +1,12 @@
+Aplikácia "Moje memes" slúži na zdieľanie memes.
+
+Meme, alebo internetobvý mém je označenie pre myšlienkový pojem, ktorý sa šíri prostredníctvom
+internetu.
+
+V dnešnej dobe sa smiešne obrázky vytvárajú snáď na všetko.
+
+Po prihlásení do tejto aplikácie môžete pridať obrázok zo svojho mobilného zariadenia a ostaní ľudia
+ho uvidia. keď sa vámk nejaký príspevok páči, neváhajte kliknút na tlačidlo páči sa mi to.
+
+
+

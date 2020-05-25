@@ -46,7 +46,7 @@ class HomeActivity : AppCompatActivity() {
 
         when (item?.itemId) {
             R.id.menuItem_about_us -> {
-                startActivity(Intent(this, HomeActivity::class.java))
+                startActivity(Intent(this, AboutUs::class.java))
                 finish()
             }
             R.id.menuItem_sign_in -> {
