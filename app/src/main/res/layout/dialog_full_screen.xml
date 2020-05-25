@@ -25,6 +25,7 @@
         android:id="@+id/btn_screen_like"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:text="Páči sa mi"
         app:layout_constraintStart_toStartOf="@+id/textView_screen_description"
         app:layout_constraintTop_toBottomOf="@+id/textView_screen_description" />
@@ -40,31 +41,34 @@
 
     <TextView
         android:id="@+id/textView_screen_description"
-        android:layout_width="329dp"
-        android:layout_height="57dp"
+        android:layout_width="289dp"
+        android:layout_height="45dp"
         android:layout_marginTop="48dp"
         android:background="#D9DDD9"
         android:text="TextView"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.557"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView_fullScreen"
-        app:layout_constraintVertical_bias="0.015" />
+        app:layout_constraintVertical_bias="0.032" />
 
     <TextView
         android:id="@+id/textView_screen_LabelLikes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="148dp"
-        android:layout_marginBottom="112dp"
+        android:layout_marginBottom="104dp"
         android:text="Páči sa to:"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.44"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/textView_screen_numOfLikes"
         android:layout_width="wrap_content"
         android:layout_height="19dp"
-        android:layout_marginBottom="112dp"
+        android:layout_marginBottom="104dp"
         android:text=" Likes"
         android:textAlignment="viewStart"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -76,7 +80,6 @@
         android:id="@+id/textView_screen_postTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
         android:text="TextView"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -87,28 +90,28 @@
 
     <ImageView
         android:id="@+id/imageView_screen_user"
-        android:layout_width="53dp"
+        android:layout_width="51dp"
         android:layout_height="49dp"
-        android:layout_marginTop="49dp"
+        android:layout_marginTop="575dp"
+        android:layout_marginBottom="56dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/textView_screen_description"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView_fullScreen"
+        app:layout_constraintTop_toTopOf="@+id/imageView_fullScreen"
+        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/ic_launcher_background" />
 
     <TextView
         android:id="@+id/textView_userName"
-        android:layout_width="44dp"
-        android:layout_height="39dp"
-        android:layout_marginStart="20dp"
-        android:text="TextView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView_screen_user" />
+        android:layout_width="49dp"
+        android:layout_height="44dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="12dp"
+        android:text="user"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btn_screen_like" />
 
-    <!--        android:layout_width="0dp"-->
-    <!--        android:layout_height="737dp"-->
-    <!--        app:layout_constraintBaseline_toBaselineOf="parent"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

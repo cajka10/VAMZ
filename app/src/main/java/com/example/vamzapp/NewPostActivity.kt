@@ -38,30 +38,26 @@ class NewPostActivity : AppCompatActivity(), View.OnClickListener {
     private var imagePath: Uri? = null
     private var storage: FirebaseStorage? = null
     private var storageReference: StorageReference? = null
-    var selectedCategory: CategoriesEnum? = null
-    var imageUrl: String = ""
-    var imageName: String = ""
+    private var selectedCategory: CategoriesEnum? = null
+    private var imageUrl: String = ""
+    private var imageName: String = ""
+
+    var myReceiver = object : NetworkChangedReceiver() {
+        override fun broadcastResult(connected: Boolean) {
+            if (!connected) {
+                imageView_newPost_Post.isClickable = connected
+
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_post)
 
-        var myReceiver = object : NetworkChangedReceiver() {
-            override fun broadcastResult(connected: Boolean) {
-                if (connected){
-
-                }
-                else{
-                    imageView_newPost_Post.isClickable = connected
-
-
-                }
-            }
-        }
-
         var intentFilter = IntentFilter()
-        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION)
 
+        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION)
 
         registerReceiver(myReceiver, intentFilter)
 
@@ -128,7 +124,7 @@ class NewPostActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun uploadPhoto(parImagePath: Uri?) {
-        btn_newPost_Post.isClickable = false
+
         if (parImagePath != null) {
             val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, imagePath)
             imageView_newPost_Post.setImageBitmap(bitmap)
@@ -142,7 +138,11 @@ class NewPostActivity : AppCompatActivity(), View.OnClickListener {
                     imageRef.downloadUrl.addOnSuccessListener {
                         imageUrl = it.toString()
                         Glide.with(this).load(imageUrl).into(imageView_newPost_Post)
-                        Toast.makeText(applicationContext, "Obrazok bol nahraty do cloudu, mozes ho pridat", Toast.LENGTH_SHORT)
+                        Toast.makeText(
+                            applicationContext,
+                            "Obrazok bol nahraty do cloudu, mozes ho pridat",
+                            Toast.LENGTH_SHORT
+                        )
                             .show()
                         btn_newPost_Post.isClickable = true
                     }
@@ -219,8 +219,11 @@ class NewPostActivity : AppCompatActivity(), View.OnClickListener {
         if (p0 === imageView_newPost_Post) {
             showFileChooser()
         }
+
         if (p0 === btn_newPost_Post) {
-            savePostToDatabase(imageUrl, imageName)
+            if (imagePath != null) {
+                savePostToDatabase(imageUrl, imageName)
+            }
         }
     }
 
@@ -237,6 +240,11 @@ class NewPostActivity : AppCompatActivity(), View.OnClickListener {
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
         finish()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        unregisterReceiver(myReceiver)
     }
 
 }

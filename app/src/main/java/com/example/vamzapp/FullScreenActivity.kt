@@ -3,6 +3,7 @@ package com.example.vamzapp
 import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -10,6 +11,7 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -17,6 +19,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.android.synthetic.main.dialog_full_screen.*
 
 class FullScreenActivity : AppCompatActivity() {
@@ -116,9 +119,8 @@ class FullScreenActivity : AppCompatActivity() {
                 }
 
                 override fun onDataChange(p0: DataSnapshot) {
-                    setUserPhoto(p0.child("url").getValue(String :: class.java)!!)
-                    textView_userName.setText(p0.child("userName").getValue(String :: class.java)!!)
-
+                    setUserPhoto(p0.child("url").getValue(String::class.java)!!)
+                    textView_userName.setText(p0.child("userName").getValue(String::class.java)!!)
 
 
                 }
@@ -131,7 +133,12 @@ class FullScreenActivity : AppCompatActivity() {
      *
      */
     private fun setUserPhoto(url: String) {
-        Glide.with(this).load(url).into(imageView_screen_user)
+        if (url != null && !url.isEmpty()) {
+            Glide.with(this).load(url).apply(RequestOptions.circleCropTransform()).into(imageView_screen_user)
+        } else{
+            val tempBitmap = BitmapFactory.decodeFile("drawable/person_icon.jpg");
+            imageView_screen_user.setImageBitmap(tempBitmap)
+        }
     }
 
     /**

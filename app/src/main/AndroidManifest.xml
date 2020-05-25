@@ -12,13 +12,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".UsersActivity"></activity>
+
+        <activity android:name=".UsersActivity" />
         <activity android:name=".DashboardActivity" />
         <activity android:name=".FullScreenActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".ProfileActivity" />
+        <activity android:name=".HomeActivity" />
         <activity
-            android:name=".HomeActivity"
+            android:name=".SplashScreenActivity"
+            android:theme="@style/AppTheme.NoActionBar"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,8 +33,8 @@
         </activity>
         <activity
             android:name=".NewPostActivity"
-            android:parentActivityName=".DashboardActivity"></activity>
-        <activity android:name=".SignUpActivity"></activity>
+            android:parentActivityName=".DashboardActivity" />
+        <activity android:name=".SignUpActivity" />
     </application>
 
 </manifest>

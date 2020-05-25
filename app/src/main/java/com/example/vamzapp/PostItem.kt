@@ -25,7 +25,7 @@ class PostItem(val post:Post): Item<ViewHolder>() {
 
             GlideApp.with(item).load(post.photoUrl).centerCrop()
                 .into(item.imageView_post_Photo)
-
+            item.editText_post_PostTitle.setText(post.postTitle)
             item.textView_post_description.text = post.description
             item.textView_post_userName.text = post.userName
             item.textView_post_numLikes.text = post.numOfLikes.toString()

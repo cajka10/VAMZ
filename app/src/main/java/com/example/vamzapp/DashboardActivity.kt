@@ -26,14 +26,18 @@ import com.google.firebase.database.*
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.activity_dashboard.*
-import kotlinx.android.synthetic.main.activity_new_post.*
 
 
 open class DashboardActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
-    var selectedCategory: CategoriesEnum? = null
+    private var selectedCategory: CategoriesEnum? = null
 
     private var ref: FirebaseDatabase? = null
+    private val myReceiver = object : NetworkChangedReceiver() {
+        override fun broadcastResult(connected: Boolean) {
+        }
+
+    }
 
     companion object {
         val POST_KEY = "POST_KEY"
@@ -49,13 +53,10 @@ open class DashboardActivity : AppCompatActivity() {
         supportActionBar?.title = "Nástenka"
 
         var intentFilter = IntentFilter()
-//        val myReceiver = NetworkChangedReceiver()
+
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION)
-//        var conn = myReceiver.connection
 
-//        registerReceiver(myReceiver, intentFilter)
-
-//        Log.d("DASH", "Connections is: " + conn.toString())
+        registerReceiver(myReceiver, intentFilter)
 
         dashboard_recyclerView.layoutManager = LinearLayoutManager(this)
         dashboard_recyclerView.addItemDecoration(
@@ -65,13 +66,13 @@ open class DashboardActivity : AppCompatActivity() {
             )
         )
         editText_dash_searchPost.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {
+            override fun afterTextChanged(newText: Editable?) {
             }
 
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            override fun beforeTextChanged(newText: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
 
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            override fun onTextChanged(newText: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 val searchedText = editText_dash_searchPost.text.toString()
                 findPostByUserName("userName", searchedText)
             }
@@ -127,7 +128,7 @@ open class DashboardActivity : AppCompatActivity() {
         })
     }
 
-    private fun findPostByUserName(myTag : String, searchedText: String) {
+    private fun findPostByUserName(myTag: String, searchedText: String) {
         val tempRef = ref?.getReference("/posts")
         if (tempRef != null) {
             tempRef.orderByChild(myTag).startAt(searchedText)
@@ -265,6 +266,11 @@ open class DashboardActivity : AppCompatActivity() {
         startActivity(intent)
         finish()
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(myReceiver)
 
     }
 
