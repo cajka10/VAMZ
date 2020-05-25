@@ -7,8 +7,8 @@ import kotlinx.android.parcel.Parcelize
 import java.time.LocalDateTime
 
 @Parcelize
-class User(val uid : String, val userName : String, val email : String) :
+class User(val uid : String, val userName : String, val email : String, val url : String) :
     Parcelable {
     @RequiresApi(Build.VERSION_CODES.O)
-    constructor() : this("","","")
+    constructor() : this("","","", "")
 }

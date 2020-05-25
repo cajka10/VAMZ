@@ -9,6 +9,7 @@ import android.os.Environment
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -54,8 +55,12 @@ class FullScreenActivity : AppCompatActivity() {
         }
         textView_screen_postTitle.setText(post.postTitle)
         getNumberOfLikes(post)
+        getUserInfo(post)
     }
 
+    /**
+     *
+     */
     private fun updateLikes(post: Post) {
         val postId = post.postId
         val uid = auth.currentUser?.uid.toString()
@@ -75,9 +80,11 @@ class FullScreenActivity : AppCompatActivity() {
 
         }
 
-
     }
 
+    /**
+     *
+     */
     private fun getNumberOfLikes(post: Post) {
         val dbRef = FirebaseDatabase.getInstance().getReference()
         val postId = post.postId
@@ -95,7 +102,41 @@ class FullScreenActivity : AppCompatActivity() {
             })
     }
 
+    /**
+     *
+     */
+    private fun getUserInfo(post: Post) {
+        val dbRef = FirebaseDatabase.getInstance().getReference("users/")
+        var name = ""
+        val uid = post.uid
+        var url = ""
+        dbRef.child(uid)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onCancelled(p0: DatabaseError) {
+                }
 
+                override fun onDataChange(p0: DataSnapshot) {
+                    setUserPhoto(p0.child("url").getValue(String :: class.java)!!)
+                    textView_userName.setText(p0.child("userName").getValue(String :: class.java)!!)
+
+
+
+                }
+
+            })
+
+    }
+
+    /**
+     *
+     */
+    private fun setUserPhoto(url: String) {
+        Glide.with(this).load(url).into(imageView_screen_user)
+    }
+
+    /**
+     *
+     */
     private fun downloadPhoto(
         fileName: String,
         extension: String,
@@ -129,3 +170,4 @@ class FullScreenActivity : AppCompatActivity() {
         finish()
     }
 }
+

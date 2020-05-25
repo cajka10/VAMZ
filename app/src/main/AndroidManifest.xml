@@ -12,24 +12,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".DashboardActivity"></activity>
-        <activity android:name=".FullScreenActivity"></activity>
-        <activity android:name=".LoginActivity"></activity>
-        <activity android:name=".ProfileActivity"></activity>
-        <activity android:name=".HomeActivity"
+        <activity android:name=".UsersActivity"></activity>
+        <activity android:name=".DashboardActivity" />
+        <activity android:name=".FullScreenActivity" />
+        <activity android:name=".LoginActivity" />
+        <activity android:name=".ProfileActivity" />
+        <activity
+            android:name=".HomeActivity"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
-                <action android:name="android.net.wifi.WIFI_STATE_CHANGED"/>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".NewPostActivity"
-            android:parentActivityName=".DashboardActivity">
-        </activity>
-        <activity android:name=".SignUpActivity">
-        </activity>
+        <activity
+            android:name=".NewPostActivity"
+            android:parentActivityName=".DashboardActivity"></activity>
+        <activity android:name=".SignUpActivity"></activity>
     </application>
 
 </manifest>

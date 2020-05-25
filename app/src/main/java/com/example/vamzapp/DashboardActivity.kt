@@ -3,6 +3,8 @@ package com.example.vamzapp
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Intent
+import android.content.IntentFilter
+import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -10,6 +12,9 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
@@ -21,10 +26,12 @@ import com.google.firebase.database.*
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.activity_dashboard.*
+import kotlinx.android.synthetic.main.activity_new_post.*
 
 
 open class DashboardActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
+    var selectedCategory: CategoriesEnum? = null
 
     private var ref: FirebaseDatabase? = null
 
@@ -33,11 +40,22 @@ open class DashboardActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
         auth = FirebaseAuth.getInstance()
 
         ref = FirebaseDatabase.getInstance()
+        supportActionBar?.title = "Nástenka"
+
+        var intentFilter = IntentFilter()
+//        val myReceiver = NetworkChangedReceiver()
+        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION)
+//        var conn = myReceiver.connection
+
+//        registerReceiver(myReceiver, intentFilter)
+
+//        Log.d("DASH", "Connections is: " + conn.toString())
 
         dashboard_recyclerView.layoutManager = LinearLayoutManager(this)
         dashboard_recyclerView.addItemDecoration(
@@ -55,10 +73,30 @@ open class DashboardActivity : AppCompatActivity() {
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 val searchedText = editText_dash_searchPost.text.toString()
-                findPostByUserName(searchedText)
+                findPostByUserName("userName", searchedText)
             }
         })
 
+        val categories =
+            arrayOf(CategoriesEnum.FUNNY, CategoriesEnum.AWESOME, CategoriesEnum.ANIMALS)
+        val arrayAdapter = ArrayAdapter<CategoriesEnum>(
+            this,
+            R.layout.support_simple_spinner_dropdown_item,
+            categories
+        )
+
+        spinner_dash.adapter = arrayAdapter
+
+        spinner_dash.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+            }
+
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                selectedCategory = categories[p2]
+                findPostByUserName("category", selectedCategory.toString())
+            }
+
+        }
 
         fetchPosts()
         sendNotificationIfChanged()
@@ -82,7 +120,6 @@ open class DashboardActivity : AppCompatActivity() {
                     }
                 }
                 dashboard_recyclerView.adapter = adapter
-
             }
 
             override fun onCancelled(p0: DatabaseError) {
@@ -90,14 +127,15 @@ open class DashboardActivity : AppCompatActivity() {
         })
     }
 
-    private fun findPostByUserName(searchedText: String) {
+    private fun findPostByUserName(myTag : String, searchedText: String) {
         val tempRef = ref?.getReference("/posts")
         if (tempRef != null) {
-            tempRef.orderByChild("userName").startAt(searchedText)
+            tempRef.orderByChild(myTag).startAt(searchedText)
                 .endAt(searchedText + "\uf8ff")
                 .addValueEventListener(object : ValueEventListener {
                     override fun onCancelled(p0: DatabaseError) {
                     }
+
                     override fun onDataChange(p0: DataSnapshot) {
                         val adapter = GroupAdapter<ViewHolder>()
                         p0.children.forEach {
@@ -114,9 +152,7 @@ open class DashboardActivity : AppCompatActivity() {
                             }
                         }
                         dashboard_recyclerView.adapter = adapter
-
                     }
-
                 })
         }
     }
@@ -143,7 +179,6 @@ open class DashboardActivity : AppCompatActivity() {
 
             override fun onChildRemoved(p0: DataSnapshot) {
             }
-
         })
 
     }

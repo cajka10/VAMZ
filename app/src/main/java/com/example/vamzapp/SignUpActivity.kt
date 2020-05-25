@@ -11,8 +11,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_main.*
-import java.time.LocalDate
-import java.time.LocalDateTime
 
 
 class SignUpActivity : AppCompatActivity() {
@@ -73,17 +71,21 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun savePostToDatabase() {
-        val tempUserName = auth.currentUser?.displayName.toString()
+        var tempUserName = ""
+        if (auth.currentUser?.displayName != null) {
+            tempUserName = auth.currentUser?.displayName.toString()
+        }
+
         val tempEmail = textEditEmail.text.toString()
-        val id = auth.currentUser?.uid
+        val uid = auth.currentUser?.uid
 
         val ref = FirebaseDatabase.getInstance().getReference("users")
 
-        if (id != null) {
+        if (uid != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val user = User(id, tempUserName, tempEmail)
+                val user = User(uid, tempUserName, tempEmail, "")
 
-            ref.child(id).setValue(user)
+            ref.child(uid).setValue(user)
                 .addOnSuccessListener {
                     Log.d("New user", "New User added")
 

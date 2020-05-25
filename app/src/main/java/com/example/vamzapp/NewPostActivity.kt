@@ -46,11 +46,22 @@ class NewPostActivity : AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_post)
 
+        var myReceiver = object : NetworkChangedReceiver() {
+            override fun broadcastResult(connected: Boolean) {
+                if (connected){
+
+                }
+                else{
+                    imageView_newPost_Post.isClickable = connected
+
+
+                }
+            }
+        }
+
         var intentFilter = IntentFilter()
-//        var myReceiver = ConnectionReceiver()
-//        intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION)
-        val myReceiver = NetworkChangedReceiver()
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION)
+
 
         registerReceiver(myReceiver, intentFilter)
 
@@ -58,6 +69,7 @@ class NewPostActivity : AppCompatActivity(), View.OnClickListener {
         supportActionBar?.title = "Vytvor nový príspevok"
 
         btn_newPost_Post.setOnClickListener(this)
+
         storage = FirebaseStorage.getInstance()
         storageReference = storage!!.reference
         textView_newPost_description.setText(textView_newPost_description.text.toString())
@@ -85,6 +97,7 @@ class NewPostActivity : AppCompatActivity(), View.OnClickListener {
         }
 
         imageView_newPost_Post.setOnClickListener(this)
+
 
     }
 
@@ -115,6 +128,7 @@ class NewPostActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun uploadPhoto(parImagePath: Uri?) {
+        btn_newPost_Post.isClickable = false
         if (parImagePath != null) {
             val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, imagePath)
             imageView_newPost_Post.setImageBitmap(bitmap)
@@ -125,11 +139,12 @@ class NewPostActivity : AppCompatActivity(), View.OnClickListener {
             val imageRef = storageReference!!.child("images/posts/" + imageName)
             imageRef.putFile(imagePath!!)
                 .addOnSuccessListener {
-                    Toast.makeText(applicationContext, "Obrazok bol nahraty do cloudu, mozes ho pridat", Toast.LENGTH_SHORT)
-                        .show()
                     imageRef.downloadUrl.addOnSuccessListener {
                         imageUrl = it.toString()
                         Glide.with(this).load(imageUrl).into(imageView_newPost_Post)
+                        Toast.makeText(applicationContext, "Obrazok bol nahraty do cloudu, mozes ho pridat", Toast.LENGTH_SHORT)
+                            .show()
+                        btn_newPost_Post.isClickable = true
                     }
                 }
                 .addOnFailureListener {
@@ -223,4 +238,5 @@ class NewPostActivity : AppCompatActivity(), View.OnClickListener {
         startActivity(intent)
         finish()
     }
+
 }

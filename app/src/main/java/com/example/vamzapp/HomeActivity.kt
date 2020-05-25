@@ -15,6 +15,8 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_homepage)
         auth = FirebaseAuth.getInstance()
+        supportActionBar?.title = "Moje memes"
+
     }
 
     override fun onStart() {

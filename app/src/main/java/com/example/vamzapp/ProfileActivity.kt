@@ -5,13 +5,16 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.activity_profile.*
@@ -115,8 +118,7 @@ class ProfileActivity : DashboardActivity(), View.OnClickListener {
     }
 
     private fun saveUserInfo(photoUri: String) {
-        var displayName = editText_userName.text.toString().substringAfter(":")
-
+        var displayName = editText_userName.text.toString()
         val currUser = auth.currentUser
 
         if (currUser != null) {
@@ -126,6 +128,22 @@ class ProfileActivity : DashboardActivity(), View.OnClickListener {
                 .build()
             currUser?.updateProfile(updates)
         }
+        val ref = FirebaseDatabase.getInstance().getReference("users/")
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val user = User(currUser!!.uid, displayName, currUser.email.toString(), photoUri)
+
+            ref.child(currUser.uid).setValue(user)
+                .addOnSuccessListener {
+                    Log.d("New user", "New User added")
+
+                }
+                .addOnFailureListener {
+                    Log.d("New Post", "Failed to add new User")
+                }
+        }
+
+
     }
 
     override fun onClick(p0: View?) {
