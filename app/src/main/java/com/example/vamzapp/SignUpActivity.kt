@@ -42,7 +42,8 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     /**
-     *
+     *Checks if everything is written down and create a user
+     * using FireBaseAuthetntication
      */
     fun signUpUser(){
         if (textEditEmail.text.toString().isEmpty()){
@@ -65,7 +66,7 @@ class SignUpActivity : AppCompatActivity() {
         auth.createUserWithEmailAndPassword(textEditEmail.text.toString(), textEditPswd.text.toString())
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    savePostToDatabase()
+                    saveToDatabase()
                     startActivity(Intent(this, LoginActivity::class.java))
                     finish()
                 } else {
@@ -76,9 +77,9 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     /**
-     *
+     *Saving user to database after signing up
      */
-    private fun savePostToDatabase() {
+    private fun saveToDatabase() {
         var tempUserName = ""
         if (auth.currentUser?.displayName != null) {
             tempUserName = auth.currentUser?.displayName.toString()
@@ -95,11 +96,11 @@ class SignUpActivity : AppCompatActivity() {
 
             ref.child(uid).setValue(user)
                 .addOnSuccessListener {
-                    Log.d("New user", "New User added")
+                    Log.d("Nový užívateľ", "Nový užívateľ pridaný")
 
                 }
                 .addOnFailureListener {
-                    Log.d("New Post", "Failed to add new User")
+                    Log.d("Nový užívateľ", "Nový užívateľ nebol pridaný")
                 }
             }
         }

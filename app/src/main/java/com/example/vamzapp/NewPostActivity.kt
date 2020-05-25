@@ -48,9 +48,6 @@ class NewPostActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    /**
-     *
-     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_post)
@@ -99,9 +96,10 @@ class NewPostActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     /**
-     *
+     *Show file chooser for adding photo
      */
     private fun showFileChooser() {
+        //otvori nam prehliadac obrázkov
         val intent = Intent()
         intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
         intent.type = "image/*"
@@ -109,6 +107,13 @@ class NewPostActivity : AppCompatActivity(), View.OnClickListener {
         startActivityForResult(Intent.createChooser(intent, "Vyber obrázok"), PICK_IMAGE_REQUEST)
     }
 
+    /**
+     *After choosing photo trigger uploading to cloud
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -128,9 +133,10 @@ class NewPostActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     /**
-     *
+     *Uploading choosen photo to cloud
      */
     private fun uploadPhoto(parImagePath: Uri?) {
+        //nahrá fotku na cloud a zobrazí ju v našom okne
         btn_newPost_Post.isClickable = false
         if (parImagePath != null) {
             val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, imagePath)
@@ -147,7 +153,7 @@ class NewPostActivity : AppCompatActivity(), View.OnClickListener {
                         Glide.with(this).load(imageUrl).into(imageView_newPost_Post)
                         Toast.makeText(
                             applicationContext,
-                            "Obrazok bol nahraty do cloudu, mozes ho pridat",
+                            "Obrazok bol nahraty do cloudu, môžeš ho pridať",
                             Toast.LENGTH_SHORT
                         )
                             .show()
@@ -156,16 +162,17 @@ class NewPostActivity : AppCompatActivity(), View.OnClickListener {
                 }
                 .addOnFailureListener {
                     progressDialog.dismiss()
-                    Toast.makeText(applicationContext, "Obrazok nebol nahraty", Toast.LENGTH_SHORT)
+                    Toast.makeText(applicationContext, "Obrázok nebol nahratý", Toast.LENGTH_SHORT)
                         .show()
                 }
         }
     }
 
     /**
-     *
+     *Saving post to our database
      */
     private fun savePostToDatabase(imageUrl: String, imageName: String) {
+        //uloží Post do databázy s jeho udajmi aj s udajmi o userovi, po uspesnom pridani posle notifikáciu
         val userName = auth.currentUser?.displayName.toString()
         val description = textView_newPost_description.text.toString()
         val postTitle = textView_newPost_postTitle.text.toString()
@@ -194,14 +201,14 @@ class NewPostActivity : AppCompatActivity(), View.OnClickListener {
                     finish()
                 }
                 .addOnFailureListener {
-                    Log.d("New Post", "Failed to add new post")
+                    Log.d("Nový príspevok", "Pridanie zlyhalo")
                 }
         }
 
     }
 
     /**
-     *
+     *Send notofication if post is succesfully added to database
      */
     private fun sendNotification() {
 
@@ -231,7 +238,7 @@ class NewPostActivity : AppCompatActivity(), View.OnClickListener {
         if (p0 === imageView_newPost_Post) {
             showFileChooser()
         }
-
+        //pokial nie je pridaný obrázok nie je možné kliknut tlačidlo
         if (p0 === btn_newPost_Post) {
             if (imagePath != null) {
                 savePostToDatabase(imageUrl, imageName)

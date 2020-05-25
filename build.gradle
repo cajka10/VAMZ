@@ -5,6 +5,17 @@ buildscript {
     repositories {
         google()
         jcenter()
+        ext {
+            dokkaVersion = '0.9.17'
+        }
+
+        repositories {
+            jcenter()
+        }
+
+        dependencies {
+            classpath "org.jetbrains.dokka:dokka-android-gradle-plugin:$dokkaVersion"
+        }
         
     }
     dependencies {

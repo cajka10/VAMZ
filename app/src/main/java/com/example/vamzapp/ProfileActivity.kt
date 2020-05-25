@@ -53,6 +53,10 @@ class ProfileActivity : DashboardActivity(), View.OnClickListener {
 
     }
 
+    /**
+     * Load photo on start
+     *
+     */
     override fun onStart() {
         super.onStart()
         if (auth.currentUser?.photoUrl != null) {
@@ -61,7 +65,7 @@ class ProfileActivity : DashboardActivity(), View.OnClickListener {
     }
 
     /**
-     *
+     * Show file chooser for adding profile photo
      */
     private fun showFileChooser() {
         val intent = Intent()
@@ -71,7 +75,13 @@ class ProfileActivity : DashboardActivity(), View.OnClickListener {
         startActivityForResult(Intent.createChooser(intent, "Vyber obrázok"), PICK_IMAGE_REQUEST)
     }
 
-
+    /**
+     * sets choosed image as imageview and sets url
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -92,7 +102,7 @@ class ProfileActivity : DashboardActivity(), View.OnClickListener {
     }
 
     /**
-     *
+     *After buton is clicked, uploads choosed photo to cloud
      */
     private fun uploadPhoto() {
         if (imagePath != null) {
@@ -127,7 +137,7 @@ class ProfileActivity : DashboardActivity(), View.OnClickListener {
     }
 
     /**
-     *
+     *Updating users info, such as photo and name in database but also to Firebase
      */
     private fun saveUserInfo(photoUri: String) {
         var displayName = editText_userName.text.toString()
@@ -167,7 +177,7 @@ class ProfileActivity : DashboardActivity(), View.OnClickListener {
     }
 
     /**
-     *
+     * Saving name and image path
      */
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)

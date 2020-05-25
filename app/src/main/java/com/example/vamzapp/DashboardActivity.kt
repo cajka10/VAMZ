@@ -105,9 +105,10 @@ open class DashboardActivity : AppCompatActivity() {
     }
 
     /**
-     *
+     *method for retrieving data from database and loading into reczclerview
      */
     private fun fetchPosts() {
+        //načíta všetky príspevky z databázy do nášho recyclerview
         var tempRef = ref?.getReference("/posts")
         tempRef?.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(p0: DataSnapshot) {
@@ -132,11 +133,14 @@ open class DashboardActivity : AppCompatActivity() {
         })
     }
 
-    //Najdenie všetkých príspevkov, podľa mena užívateľa
     /**
-     *
+     *Method for finding posts in database
+     * @param myTag represents child od post in database
+     * @param searchedText represents value of tag we are seraching for
      */
     private fun findPostByUserName(myTag: String, searchedText: String) {
+        //Najdenie všetkých príspevkov, podľa mena užívateľa
+
         val tempRef = ref?.getReference("/posts")
         val adapter = GroupAdapter<ViewHolder>()
 
@@ -170,9 +174,10 @@ open class DashboardActivity : AppCompatActivity() {
 
 
     /**
-     *
+     *Method is looking for change in post datac
      */
     private fun sendNotificationIfChanged() {
+        //ked sa zmení počet lajkov v tabulke zasle notifikáciu
         val uid = auth.currentUser?.uid.toString()
         var tempRef = ref?.getReference()?.child("/posts")?.orderByChild("uid")?.startAt(uid)
             ?.endAt(uid + "\uf8ff")
@@ -198,7 +203,9 @@ open class DashboardActivity : AppCompatActivity() {
     }
 
     /**
-     *
+     * Method for pushing notification to device for author of post
+     * triggers if someone likes user post
+     * I
      */
     private fun sendNotification() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -219,6 +226,12 @@ open class DashboardActivity : AppCompatActivity() {
         managerCompat.notify(999, builder.build())
     }
 
+    /**
+     * navigatin in projekt by menu items
+     *
+     * @param item
+     * @return
+     */
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
 
         when (item?.itemId) {
@@ -249,6 +262,12 @@ open class DashboardActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    /**
+     * create menu and sets visible group of online options
+     *
+     * @param menu
+     * @return
+     */
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_home, menu)
         menu?.setGroupVisible(R.id.menu_offline, false)
@@ -260,7 +279,6 @@ open class DashboardActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-//        dashboard_recyclerView.scrollToPosition(adapter.itemCount - 1)
         if (auth.currentUser == null) {
             val intent = Intent(this, HomeActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -271,7 +289,7 @@ open class DashboardActivity : AppCompatActivity() {
 
 
     /**
-     *
+     *Logs out current logged user
      */
     fun logOut() {
         Toast.makeText(

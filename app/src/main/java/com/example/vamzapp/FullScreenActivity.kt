@@ -19,9 +19,12 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.android.synthetic.main.dialog_full_screen.*
 
+/**
+ * This activity represents screen of post after click on the dashboard
+ *
+ */
 class FullScreenActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private var storage: FirebaseStorage? = null
@@ -63,9 +66,12 @@ class FullScreenActivity : AppCompatActivity() {
     }
 
     /**
-     *
+     * Adds Like to Database
+     * @param Post
      */
+
     private fun updateLikes(post: Post) {
+        //pridá LIKE ako atribut do tabulky posts
         val postId = post.postId
         val uid = auth.currentUser?.uid.toString()
         val dbRef = FirebaseDatabase.getInstance().getReference()
@@ -87,7 +93,8 @@ class FullScreenActivity : AppCompatActivity() {
     }
 
     /**
-     *
+     * Sets texView with number of likes by numbers of likes in post
+     * @param post
      */
     private fun getNumberOfLikes(post: Post) {
         val dbRef = FirebaseDatabase.getInstance().getReference()
@@ -107,9 +114,13 @@ class FullScreenActivity : AppCompatActivity() {
     }
 
     /**
-     *
+     * sets info od post author as photoUrl and user name
+     * @param post
+     *@param Post
      */
+
     private fun getUserInfo(post: Post) {
+        //nastavi textview s počtom likov
         val dbRef = FirebaseDatabase.getInstance().getReference("users/")
         var name = ""
         val uid = post.uid
@@ -122,8 +133,6 @@ class FullScreenActivity : AppCompatActivity() {
                 override fun onDataChange(p0: DataSnapshot) {
                     setUserPhoto(p0.child("url").getValue(String::class.java)!!)
                     textView_userName.setText(p0.child("userName").getValue(String::class.java)!!)
-
-
                 }
 
             })
@@ -131,7 +140,8 @@ class FullScreenActivity : AppCompatActivity() {
     }
 
     /**
-     *
+     *method for loadinf photo from url, using GlideApp
+     * @param url represents url of author photo on the cloud
      */
     private fun setUserPhoto(url: String) {
         if (url != null && !url.isEmpty()) {
@@ -144,7 +154,11 @@ class FullScreenActivity : AppCompatActivity() {
     }
 
     /**
-     *
+     * method downloads photo to device
+     * @param fileName
+     * @param extension
+     * @param destination
+     * @param photoUrl
      */
     private fun downloadPhoto(
         fileName: String,

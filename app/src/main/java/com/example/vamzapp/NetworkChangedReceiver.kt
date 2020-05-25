@@ -6,7 +6,7 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.widget.Toast
 
-
+//trieda slúži na sledovanie pripojenia na internet
 abstract class NetworkChangedReceiver : BroadcastReceiver() {
     private var isConnected = true
 
