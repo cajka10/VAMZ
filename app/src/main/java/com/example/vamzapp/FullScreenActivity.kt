@@ -52,6 +52,7 @@ class FullScreenActivity : AppCompatActivity() {
         btn_screen_like.setOnClickListener {
             updateLikes(post)
         }
+        textView_screen_postTitle.setText(post.postTitle)
         getNumberOfLikes(post)
     }
 
@@ -88,7 +89,7 @@ class FullScreenActivity : AppCompatActivity() {
                 }
 
                 override fun onDataChange(p0: DataSnapshot) {
-                    textView_screen_numOfLikes.text = (p0.childrenCount).toString()
+                    textView_screen_numOfLikes.text = (p0.childrenCount).toString() + " ľuďom"
                 }
 
             })

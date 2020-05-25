@@ -36,8 +36,8 @@ class NewPostActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var auth: FirebaseAuth
     private val PICK_IMAGE_REQUEST = 1234
     private var imagePath: Uri? = null
-    internal var storage: FirebaseStorage? = null
-    internal var storageReference: StorageReference? = null
+    private var storage: FirebaseStorage? = null
+    private var storageReference: StorageReference? = null
     var selectedCategory: CategoriesEnum? = null
     var imageUrl: String = ""
     var imageName: String = ""
@@ -85,6 +85,7 @@ class NewPostActivity : AppCompatActivity(), View.OnClickListener {
         }
 
         imageView_newPost_Post.setOnClickListener(this)
+
     }
 
     private fun showFileChooser() {
@@ -124,7 +125,7 @@ class NewPostActivity : AppCompatActivity(), View.OnClickListener {
             val imageRef = storageReference!!.child("images/posts/" + imageName)
             imageRef.putFile(imagePath!!)
                 .addOnSuccessListener {
-                    Toast.makeText(applicationContext, "Obrazok bol nahraty", Toast.LENGTH_SHORT)
+                    Toast.makeText(applicationContext, "Obrazok bol nahraty do cloudu, mozes ho pridat", Toast.LENGTH_SHORT)
                         .show()
                     imageRef.downloadUrl.addOnSuccessListener {
                         imageUrl = it.toString()
@@ -194,7 +195,7 @@ class NewPostActivity : AppCompatActivity(), View.OnClickListener {
             .setContentText("VAMZ")
             .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark_normal)
             .setAutoCancel(true)
-            .setContentText("Pribudol ti like na príspevku")
+            .setContentText("Pridal si nový príspevok.")
         val managerCompat = NotificationManagerCompat.from(this)
         managerCompat.notify(999, builder.build())
     }

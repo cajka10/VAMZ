@@ -45,6 +45,7 @@
         android:layout_height="62dp"
         android:layout_marginTop="48dp"
         android:text="TextView"
+        android:background="#D9DDD9"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.49"
@@ -56,21 +57,36 @@
         android:id="@+id/textView_screen_LabelLikes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="112dp"
+        android:layout_marginStart="144dp"
+        android:layout_marginBottom="112dp"
         android:text="Páči sa to:"
-        app:layout_constraintBaseline_toBaselineOf="@+id/textView_screen_numOfLikes"
-        app:layout_constraintStart_toStartOf="@+id/textView_screen_description" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/textView_screen_numOfLikes"
-        android:layout_width="64dp"
+        android:layout_width="wrap_content"
         android:layout_height="19dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="22dp"
-        android:text="Likes"
-        app:layout_constraintBottom_toTopOf="@+id/textView_screen_description"
-        app:layout_constraintStart_toEndOf="@+id/textView_screen_LabelLikes"
-        app:layout_constraintTop_toBottomOf="@+id/imageView_fullScreen" />
+        android:layout_marginBottom="112dp"
+        android:text=" Likes"
+        android:textAlignment="viewStart"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/textView_screen_LabelLikes" />
+
+    <TextView
+        android:id="@+id/textView_screen_postTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="TextView"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView_fullScreen"
+        app:layout_constraintVertical_bias="0.036" />
 
     <!--        android:layout_width="0dp"-->
     <!--        android:layout_height="737dp"-->

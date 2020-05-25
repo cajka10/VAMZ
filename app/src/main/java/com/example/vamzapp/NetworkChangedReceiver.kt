@@ -8,6 +8,7 @@ import android.widget.Toast
 
 
 class NetworkChangedReceiver : BroadcastReceiver() {
+    private var connection : Boolean = true
     override fun onReceive(context: Context, intent: Intent?) {
         val connMgr = context
             .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -18,9 +19,12 @@ class NetworkChangedReceiver : BroadcastReceiver() {
         if (wifi.isConnected || mobile.isConnected) { // do stuff
             Toast.makeText(context, "Aktivne pripojenie na internet", Toast.LENGTH_LONG).show()
         }else{
-            Toast.makeText(context, "Žiadne pripojenie na internet.", Toast.LENGTH_LONG).show()
-
+            Toast.makeText(context, "Žiadne pripojenie na internet. Nebude možné pridať obrázok.", Toast.LENGTH_LONG).show()
+            connection = false
         }
+    }
+    fun getConnection() : Boolean{
+        return connection
     }
 
 }

@@ -2,7 +2,6 @@ package com.example.vamzapp
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -22,8 +21,6 @@ import com.google.firebase.database.*
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.activity_dashboard.*
-import kotlinx.android.synthetic.main.row_dashboard.*
-import kotlinx.android.synthetic.main.row_dashboard.view.*
 
 
 open class DashboardActivity : AppCompatActivity() {
@@ -58,12 +55,10 @@ open class DashboardActivity : AppCompatActivity() {
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 val searchedText = editText_dash_searchPost.text.toString()
-                findPostByTitle(searchedText)
+                findPostByUserName(searchedText)
             }
         })
-//        textView_post_userName.setOnClickListener{
-//            selectProfile(textView_post_userName.text.toString(), it.context)
-//        }
+
 
         fetchPosts()
         sendNotificationIfChanged()
@@ -95,7 +90,7 @@ open class DashboardActivity : AppCompatActivity() {
         })
     }
 
-    private fun findPostByTitle(searchedText: String) {
+    private fun findPostByUserName(searchedText: String) {
         val tempRef = ref?.getReference("/posts")
         if (tempRef != null) {
             tempRef.orderByChild("userName").startAt(searchedText)
@@ -103,7 +98,6 @@ open class DashboardActivity : AppCompatActivity() {
                 .addValueEventListener(object : ValueEventListener {
                     override fun onCancelled(p0: DatabaseError) {
                     }
-
                     override fun onDataChange(p0: DataSnapshot) {
                         val adapter = GroupAdapter<ViewHolder>()
                         p0.children.forEach {
@@ -127,24 +121,6 @@ open class DashboardActivity : AppCompatActivity() {
         }
     }
 
-//    private fun selectProfile(userName : String, context : Context?) {
-//        val dbRef = FirebaseDatabase.getInstance().getReference("/users")
-//
-//        dbRef.orderByChild("userName").startAt(userName).endAt(userName + "\uf8ff")
-//            .addValueEventListener( object : ValueEventListener{
-//                override fun onCancelled(p0: DatabaseError) {
-//                }
-//
-//                override fun onDataChange(p0: DataSnapshot) {
-//                    val user = p0.getValue(User :: class.java)
-//                    val intent = Intent(context, ProfileActivity::class.java)
-//                    intent.putExtra("USER_KEY", user)
-//                }
-//
-//            })
-//    }
-
-
 
     private fun sendNotificationIfChanged() {
         val uid = auth.currentUser?.uid.toString()
@@ -161,19 +137,18 @@ open class DashboardActivity : AppCompatActivity() {
             override fun onChildChanged(p0: DataSnapshot, p1: String?) {
                 sendNotification()
             }
+
             override fun onChildAdded(p0: DataSnapshot, p1: String?) {
             }
 
             override fun onChildRemoved(p0: DataSnapshot) {
             }
 
-
         })
 
     }
 
     private fun sendNotification() {
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel("n", "n", NotificationManager.IMPORTANCE_DEFAULT)
             val manager = getSystemService(NotificationManager::class.java)
@@ -187,12 +162,10 @@ open class DashboardActivity : AppCompatActivity() {
             .setContentText("VAMZ")
             .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark_normal)
             .setAutoCancel(true)
-            .setContentText("Nový príspevok na nástenke v case: " + System.currentTimeMillis())
+            .setContentText("Pribudol ti lajk na jednom z tvojich prispevkov.")
         val managerCompat = NotificationManagerCompat.from(this)
         managerCompat.notify(999, builder.build())
     }
-
-
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
 

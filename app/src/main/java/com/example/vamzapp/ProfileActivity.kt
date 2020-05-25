@@ -6,21 +6,12 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.provider.MediaStore
-import android.text.Editable
-import android.text.TextWatcher
-import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
-import android.widget.EditText
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.activity_profile.*
@@ -46,11 +37,11 @@ class ProfileActivity : DashboardActivity(), View.OnClickListener {
         storage = FirebaseStorage.getInstance()
 
         storageReference = storage!!.reference
-        editText_Email.setText(editText_Email.text.toString() + auth.currentUser?.email)
-        editText_userName.setText("Meno: " + auth.currentUser?.displayName)
+        editText_Email.setText(auth.currentUser?.email)
+        editText_userName.setText(auth.currentUser?.displayName)
 
-        if (savedInstanceState != null){
-            editText_userName.setText("Meno: " + savedInstanceState.getString("name"))
+        if (savedInstanceState != null) {
+            editText_userName.setText(savedInstanceState.getString("name"))
             imagePath = Uri.parse(savedInstanceState.getString("imagePath"))
 
         }
@@ -124,7 +115,7 @@ class ProfileActivity : DashboardActivity(), View.OnClickListener {
     }
 
     private fun saveUserInfo(photoUri: String) {
-        var  displayName  = editText_userName.text.toString().substringAfter(":")
+        var displayName = editText_userName.text.toString().substringAfter(":")
 
         val currUser = auth.currentUser
 
@@ -151,6 +142,7 @@ class ProfileActivity : DashboardActivity(), View.OnClickListener {
         outState?.putString("name", editText_userName.text.toString().substringAfter(":"))
         outState?.putString("imagePath", imagePath.toString())
     }
+
     override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
         super.onRestoreInstanceState(savedInstanceState)
     }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <group android:id="@+id/menu_offline">
         <item android:title="O nás"
             android:id="@+id/menuItem_about_us"/>
@@ -19,4 +20,11 @@
         <item android:title="Odhlasit sa "
             android:id="@+id/menuItem_logOut"/>
     </group>
+<!--    <item-->
+<!--        android:title="Search"-->
+<!--        android:id="@+id/menu_search"-->
+<!--        android:icon="@android:drawable/ic_menu_search"-->
+<!--        app:showAsAction="always|collapseActionView"-->
+<!--        app:actionViewClass="android.widget.SearchView"-->
+<!--        />-->
 </menu>
